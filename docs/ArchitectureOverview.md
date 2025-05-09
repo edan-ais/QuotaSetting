@@ -1,4 +1,4 @@
-System Architecture
+# System Architecture
 The Performance Review App consists of three core components that work together to create a unified performance management solution:
 
 The User Interface Layer is implemented as a Power Apps mockup using HTML, CSS, and JavaScript to create a responsive frontend that adapts to both desktop and mobile devices. This layer handles the presentation logic including role-based view rendering that shows different interfaces for managers and employees. Client-side data validation ensures data integrity while real-time budget calculations provide immediate feedback as managers allocate compensation. Interactive form controls including dropdowns, input fields, and table views create an intuitive user experience with immediate visual feedback.
@@ -7,7 +7,7 @@ The Data Management Layer simulates a SharePoint integration for structured data
 
 The Integration Layer mimics Power Automate workflows that connect the UI and data layers. This scheduled synchronization process runs twice daily at 8:00 AM and 8:00 PM to ensure all systems remain in sync. The integration handles bidirectional data flow between the app and SharePoint, managing record-level permissions during data transfers. Comprehensive error handling and notification systems alert users and administrators of any synchronization issues to maintain data integrity throughout the process.
 
-Data Flow
+# Data Flow
 The Authentication Flow begins with user login through email identification, which then determines their role as either a Manager or Employee. Based on this role determination, the system configures appropriate access controls that limit what data the user can view and modify throughout their session.
 
 For Managers, the data flow starts by retrieving team member records from SharePoint. The app processes performance scores for each team member and calculates the budget impact of all compensation decisions in real-time. The system validates all allocation decisions against budget constraints to prevent overspending, displaying warnings when necessary. Any changes the manager makes are first written to their Manager Working Copy before being synchronized to the Manager Shared Copy that employees can view once the review is complete.
@@ -16,10 +16,10 @@ Employees experience a different data flow, beginning with the retrieval of thei
 
 The Power Automate Synchronization Flow acts as the orchestrator between systems. It regularly polls for changes in working copies from both managers and employees. Before propagating any changes, it applies business logic validation to ensure data integrity and rule compliance. Upon validation, it updates the appropriate shared copies with the approved changes and sets the correct permissions on each record type. Throughout this process, it generates notifications for significant synchronization events to keep users informed of the status of their data.
 
-Technical Implementation
+# Technical Implementation
 Initially, the Performance Review App was built in Power Apps. The mockup implementation uses vanilla JavaScript for all business logic, avoiding framework dependencies to keep the demonstration simple and focused on functionality. CSS handles responsive styling and visual feedback cues, such as highlighting budget overages in red. HTML5 provides the semantic structure for accessibility and proper document organization.
 
 All data manipulation happens client-side to simulate backend processes without requiring actual server infrastructure. Extensive DOM manipulation enables dynamic UI updates as users interact with the system. The application follows an event-driven architecture where user interactions trigger appropriate data changes and UI updates, creating a responsive feel despite being a static mockup.
 
-Security Model
+# Security Model
 The application implements security through a comprehensive, multi-layered approach. Role-based access control ensures users only see appropriate screens and functions based on their identity. Data partitioning via separate working and shared copies provides privacy during draft phases while enabling visibility when appropriate. View filtering based on user identity ensures sensitive information like compensation decisions is only visible to authorized personnel. The synchronization process carefully propagates the correct permissions as data moves between systems, maintaining the security model's integrity throughout all data transfers.

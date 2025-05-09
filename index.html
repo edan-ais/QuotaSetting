@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Review App Mock</title>
+    <style>
+        :root {
+            --intel-blue: #0071c5;
+            --intel-light-blue: #00a3e0;
+            --intel-dark-blue: #003c71;
+            --lighter-blue: #e6f2f8;
+            --light-gray: #f4f4f4;
+            --medium-gray: #dddddd;
+            --dark-gray: #333333;
+            --error-red: #d32f2f;
+            --error-light: #ffebee;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-gray);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .app-header {
+            background-color: var(--intel-blue);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .app-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .header-btn {
+            background-color: white;
+            color: var(--intel-blue);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .header-btn:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background-color: var(--medium-gray);
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+        
+        .tab.active {
+            background-color: var(--intel-blue);
+            color: white;
+        }
+        
+        .tab:first-child {
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .tab:last-child {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .start-screen {
+            text-align: center;
+            padding: 100px 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .start-btn {
+            background-color: var(--intel-blue);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        
+        .start-btn:hover {
+            background-color: var(--intel-dark-blue);
+        }
+        
+        .sync-notice {
+            background-color: var(--lighter-blue);
+            border-left: 4px solid var(--intel-blue);
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--dark-gray);
+        }
+        
+        .screen {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            min-height: 500px;
+        }
+        
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .screen-title {
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .budget-info {
+            background-color: var(--intel-blue);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            width: 300px;
+        }
+        
+        .budget-info.negative {
+            background-color: var(--error-red);
+        }
+        
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .budget-item:last-child {
+            margin-bottom: 0;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--lighter-blue);
+        }
+        
+        th {
+            background-color: var(--intel-blue);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        tr:hover {
+            background-color: var(--light-gray);
+        }
+        
+        tr.over-budget {
+            background-color: var(--error-light);
+            color: var(--error-red);
+        }
+        
+        tr.over-budget:hover {
+            background-color: #ffdde0;
+        }
+        
+        select, input {
+            padding: 8px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            width: 100%;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .visible {
+            display: block;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark-gray);
+        }
+        
+        .sharepoint-header {
+            background-color: #f0f0f0;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sharepoint-logo {
+            margin-right: 15px;
+            font-weight: bold;
+            color: var(--intel-blue);
+        }
+        
+        .sharepoint-title {
+            font-size: 20px;
+        }
+        
+        .sp-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .sp-table th {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .sp-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        /* Flow diagram styles */
+        .flow-diagram {
+            margin-top: 30px;
+        }
+        
+        .flow-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--intel-blue);
+        }
+        
+        .flow-vertical {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .flow-step-vertical {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            position: relative;
+        }
+        
+        .flow-step-vertical:after {
+            content: "↓";
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: #777;
+        }
+        
+        .flow-step-vertical:last-child:after {
+            display: none;
+        }
+        
+        .flow-trigger {
+            background-color: #ffe0b2;
+            border: 1px solid #ff9800;
+        }
+        
+        .flow-action {
+            background-color: #e3f2fd;
+            border: 1px solid var(--intel-light-blue);
+        }
+        
+        .flow-condition {
+            background-color: #f3e5f5;
+            border: 1px solid #9c27b0;
+        }
+        
+        .flow-sharepoint {
+            background-color: #e8f5e9;
+            border: 1px solid #4caf50;
+        }
+        
+        .step-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .step-description {
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .flow-schedule {
+            width: 100%;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        
+        .flow-schedule-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1100;
+        }
+        
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: scroll;
+            }
+            
+            .app-title {
+                font-size: 20px;
+            }
+            
+            .tab {
+                padding: 10px 15px;
+            }
+            
+            .budget-info {
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .screen-header {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                width: 95%;
+                max-height: 95vh;
+            }
+            
+            .action-buttons {
+                margin-top: 10px;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div class="app-title">Performance Review App</div>
+        <div class="header-actions">
+            <div id="user-info"></div>
+            <div class="action-buttons">
+                <button id="sharepoint-btn" class="header-btn hidden">View SharePoint List</button>
+                <button id="flow-btn" class="header-btn hidden">View Power Automate Flow</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="start-screen" class="start-screen visible">
+            <h1>Performance Review System</h1>
+            <h2 id="greeting">Hi, John Manager</h2>
+            <button id="start-btn" class="start-btn">Start</button>
+            
+            <!-- Hidden for the final version but kept for testing -->
+            <div style="display: none; margin-top: 20px">
+                <label for="email-input">Your Email (for demo):</label>
+                <input type="email" id="email-input" placeholder="your.name@example.com" value="john.manager@example.com" style="margin-top: 10px; width: 250px;">
+                <div style="margin-top: 10px">
+                    <label>
+                        <input type="checkbox" id="admin-checkbox" checked>
+                        Demo as Admin/Manager
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main App -->
+        <div id="main-app" class="hidden">
+            <!-- Tabs - Only visible for admin -->
+            <div id="tabs" class="tabs">
+                <button class="tab active" data-tab="manager">Manager View</button>
+                <button class="tab" data-tab="employee">Employee View</button>
+            </div>
+            
+            <!-- Manager Screen -->
+            <div id="manager-screen" class="screen visible">
+                <div class="sync-notice">
+                    <strong>Note:</strong> This app synchronizes with SharePoint twice daily (8:00 AM and 8:00 PM). Any changes you make will be reflected in SharePoint during the next scheduled update.
+                </div>
+                
+                <div class="screen-header">
+                    <h2 class="screen-title">Team Performance Reviews</h2>
+                    <div id="budget-info" class="budget-info">
+                        <div class="budget-item">
+                            <span>Pay Budget:</span>
+                            <span id="budget-total">$10,000</span>
+                        </div>
+                        <div class="budget-item">
+                            <span>Remaining:</span>
+                            <span id="budget-remaining">$10,000</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="manager-table">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>OKR Goal</th>
+                                <th>Goal Evidence</th>
+                                <th>Employee Rating</th>
+                                <th>Manager Rating</th>
+                                <th>Score</th>
+                                <th>Pay Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manager-table-body">
+                            <!-- Will be populated with JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Employee Screen -->
+            <div id="employee-screen" class="screen">
+                <div class="sync-notice">
+                    <strong>Note:</strong> This app synchronizes with SharePoint twice daily (8:00 AM and 8:00 PM). Any changes you make will be reflected in SharePoint during the next scheduled update.
+                </div>
+                
+                <div class="screen-header">
+                    <h2 class="screen-title">My Performance Review</h2>
+                </div>
+                
+                <div class="table-container">
+                    <table id="employee-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Manager Rating</th>
+                                <th>Score</th>
+                                <th>Pay Amount</th>
+                                <th>OKR Goal</th>
+                                <th>Goal Evidence</th>
+                                <th>Self Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employee-table-body">
+                            <!-- Will be populated with JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- SharePoint List Modal -->
+    <div id="sharepoint-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal="sharepoint-modal">&times;</span>
+            
+            <div class="sharepoint-header">
+                <div class="sharepoint-logo">SharePoint</div>
+                <div class="sharepoint-title">Performance Reviews - All Items</div>
+            </div>
+            
+            <div id="sp-table-container">
+                <table class="sp-table">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Manager</th>
+                            <th>OKR Goal</th>
+                            <th>Goal Evidence</th>
+                            <th>Self Rating</th>
+                            <th>Manager Rating</th>
+                            <th>Score</th>
+                            <th>Pay Amount</th>
+                            <th>Last Modified</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sp-table-body">
+                        <!-- Will be populated with JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Power Automate Flow Modal -->
+    <div id="flow-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal="flow-modal">&times;</span>
+            
+            <div class="sharepoint-header">
+                <div class="sharepoint-logo" style="color: #8c65d3;">Power Automate</div>
+                <div class="sharepoint-title">Performance Review Sync Flow</div>
+            </div>
+            
+            <div class="flow-diagram">
+                <div class="flow-title">Data Synchronization Flow Steps</div>
+                
+                <div class="flow-vertical">
+                    <div class="flow-step-vertical flow-trigger">
+                        <div class="step-title">Trigger: Recurrence</div>
+                        <div class="step-description">Run twice daily at 8:00 AM and 8:00 PM</div>
+                    </div>
+                    
+                    <div class="flow-step-vertical flow-action">
+                        <div class="step-title">Action: Get PowerApps Records</div>
+                        <div class="step-description">Connect to PowerApps and retrieve all performance review records</div>
+                    </div>
+                    
+                    <div class="flow-step-vertical flow-condition">
+                        <div class="step-title">Condition: Check for Changes</div>
+                        <div class="step-description">Compare PowerApps data with existing SharePoint records</div>
+                    </div>
+                    
+                    <div class="flow-step-vertical flow-action">
+                        <div class="step-title">Apply to Each: Process Records</div>
+                        <div class="step-description">Loop through each record that needs updating</div>
+                    </div>
+                    
+                    <div class="flow-step-vertical flow-condition">
+                        <div class="step-title">Condition: Record Type</div>
+                        <div class="step-description">Determine if record is for manager view or employee view</div>
+                    </div>
+                    
+                    <div class="flow-step-vertical flow-action">
+                        <div class="step-title">Action: Create Security Copies</div>
+                        <div class="step-description">Generate the four security-specific versions of each record</div>
+                    </div>
+                    
+                    <div class="flow-step-vertical flow-sharepoint">
+                        <div class="step-title">SharePoint: Update or Create Items</div>
+                        <div class="step-description">Update existing SharePoint items or create new ones with appropriate permissions</div>
+                    </div>
+                    
+                    <div class="flow-step-vertical flow-action">
+                        <div class="step-title">Action: Set Item-Level Permissions</div>
+                        <div class="step-description">Apply specific read/write permissions to each record</div>
+                    </div>
+                    
+                    <div class="flow-step-vertical flow-condition">
+                        <div class="step-title">Condition: Check for Errors</div>
+                        <div class="step-description">Verify all records were successfully processed</div>
+                    </div>
+                    
+                    <div class="flow-step-vertical flow-action">
+                        <div class="step-title">Action: Send Notification</div>
+                        <div class="step-description">Alert system administrator of any synchronization issues</div>
+                    </div>
+                </div>
+                
+                <div class="flow-diagram" style="margin-top: 40px;">
+                    <div class="flow-title">Security Implementation</div>
+                    <p>Due to SharePoint's security model, the flow creates four copies of each record:</p>
+                    
+                    <table class="sp-table" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>Copy Purpose</th>
+                                <th>Who Can Edit</th>
+                                <th>Who Can View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Manager Working Copy</td>
+                                <td>Manager</td>
+                                <td>Manager Only</td>
+                            </tr>
+                            <tr>
+                                <td>Manager Shared Copy</td>
+                                <td>Manager</td>
+                                <td>Manager + Employee</td>
+                            </tr>
+                            <tr>
+                                <td>Employee Working Copy</td>
+                                <td>Employee</td>
+                                <td>Employee Only</td>
+                            </tr>
+                            <tr>
+                                <td>Employee Shared Copy</td>
+                                <td>Employee</td>
+                                <td>Employee + Manager</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        Data synchronized with SharePoint successfully!
+    </div>
+
+    <script>
+        // Demo Data
+const employees = [
+    { 
+        id: 1, 
+        name: "Alice Smith", 
+        email: "alice.smith@example.com", 
+        okrGoal: "Software", 
+        goalEvidence: "Delivered project ahead of schedule",
+        selfRating: "Exceeds",
+        managerRating: "Exceeds",
+        score: 115,
+        payPercentage: 115,
+        baseSalary: 2500,
+        payAmount: 2875,
+        lastModified: "2025-05-05T09:30:00"
+    },
+    { 
+        id: 2, 
+        name: "Bob Johnson", 
+        email: "bob.johnson@example.com", 
+        okrGoal: "Customer Focus", 
+        goalEvidence: "Resolved 95% of customer tickets within SLA",
+        selfRating: "Meets",
+        managerRating: "Meets",
+        score: 100,
+        payPercentage: 100,
+        baseSalary: 2200,
+        payAmount: 2200,
+        lastModified: "2025-05-06T14:15:00"
+    },
+    { 
+        id: 3, 
+        name: "Charlie Lee", 
+        email: "charlie.lee@example.com", 
+        okrGoal: "Innovation", 
+        goalEvidence: "Filed two patents this quarter",
+        selfRating: "Exceeds",
+        managerRating: "Exceeds",
+        score: 118,
+        payPercentage: 118,
+        baseSalary: 2350,
+        payAmount: 2773,
+        lastModified: "2025-05-04T11:45:00"
+    },
+    { 
+        id: 4, 
+        name: "Diana Rodriguez", 
+        email: "diana.rodriguez@example.com", 
+        okrGoal: "Leadership", 
+        goalEvidence: "Led cross-functional team to success",
+        selfRating: "Meets",
+        managerRating: "Meets",
+        score: 105,
+        payPercentage: 105,
+        baseSalary: 2450,
+        payAmount: 2572.50,
+        lastModified: "2025-05-07T08:20:00"
+    }
+];
+
+        const managers = [
+            {
+                id: 1,
+                name: "John Manager",
+                email: "john.manager@example.com",
+                employeeIds: [1, 2, 3, 4]
+            }
+        ];
+
+        // OKR Goals options
+        const okrGoals = ["Software", "Customer Focus", "Innovation", "Leadership", "Collaboration"];
+        
+        // Rating options
+        const ratingOptions = ["Does Not Meet", "Meets", "Exceeds"];
+        
+        // Current user
+        let currentUser = null;
+        let isAdmin = true;
+        let notificationShown = false;
+        
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const mainApp = document.getElementById('main-app');
+        const managerScreen = document.getElementById('manager-screen');
+        const employeeScreen = document.getElementById('employee-screen');
+        const tabs = document.querySelectorAll('.tab');
+        const greeting = document.getElementById('greeting');
+        const userInfo = document.getElementById('user-info');
+        const startBtn = document.getElementById('start-btn');
+        const emailInput = document.getElementById('email-input');
+        const adminCheckbox = document.getElementById('admin-checkbox');
+        const tabsContainer = document.getElementById('tabs');
+        const sharepointBtn = document.getElementById('sharepoint-btn');
+        const flowBtn = document.getElementById('flow-btn');
+        const sharepointModal = document.getElementById('sharepoint-modal');
+        const flowModal = document.getElementById('flow-modal');
+        const closeModalButtons = document.querySelectorAll('.close-modal');
+        const notification = document.getElementById('notification');
+        const budgetInfoDiv = document.getElementById('budget-info');
+        
+        // Budget calculations
+        const budgetTotal = document.getElementById('budget-total');
+        const budgetRemaining = document.getElementById('budget-remaining');
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return '$' + amount.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // Extract name from email (first.last@domain.com -> First Last)
+        function getNameFromEmail(email) {
+            const namePart = email.split('@')[0];
+            const names = namePart.split('.');
+            
+            return names.map(name => 
+                name.charAt(0).toUpperCase() + name.slice(1)
+            ).join(' ');
+        }
+        
+        // Get employee by email
+        function getEmployeeByEmail(email) {
+            return employees.find(emp => emp.email.toLowerCase() === email.toLowerCase());
+        }
+        
+        // Get manager by email
+        function getManagerByEmail(email) {
+            return managers.find(mgr => mgr.email.toLowerCase() === email.toLowerCase());
+        }
+        
+        // Get employees for a manager
+        function getEmployeesForManager(managerId) {
+            const manager = managers.find(mgr => mgr.id === managerId);
+            if (!manager) return [];
+            
+            return employees.filter(emp => manager.employeeIds.includes(emp.id));
+        }
+        
+        // Calculate total budget and remaining budget
+function calculateBudget(managerEmployees) {
+    let totalBase = 0;
+    let totalPay = 0;
+    
+    managerEmployees.forEach(emp => {
+        totalBase += emp.baseSalary;
+        totalPay += emp.payAmount;
+    });
+    
+    // Set budget to 110% of base salary total
+    const budgetAmount = totalBase * 1.1;
+    
+    return {
+        totalBase: budgetAmount,  // Changed to use 110% of base salary
+        totalPay,
+        remaining: budgetAmount - totalPay
+    };
+}
+        
+        // Update the budget info display
+        function updateBudgetDisplay(budget) {
+            budgetTotal.textContent = formatCurrency(budget.totalBase);
+            budgetRemaining.textContent = formatCurrency(budget.remaining);
+            
+            // Change color if negative
+            if (budget.remaining < 0) {
+                budgetInfoDiv.classList.add('negative');
+            } else {
+                budgetInfoDiv.classList.remove('negative');
+            }
+        }
+        
+        // Update row styles based on budget
+        function updateRowStyles(tableBody, isOverBudget) {
+            const rows = tableBody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                if (isOverBudget) {
+                    row.classList.add('over-budget');
+                } else {
+                    row.classList.remove('over-budget');
+                }
+            });
+        }
+        
+        // Render manager view
+        function renderManagerView(managerId) {
+            const managerEmployees = getEmployeesForManager(managerId);
+            const managerTableBody = document.getElementById('manager-table-body');
+            
+            let html = '';
+            
+            managerEmployees.forEach(emp => {
+                html += `
+                <tr data-employee-id="${emp.id}">
+                    <td>${emp.name}</td>
+                    <td>${emp.okrGoal}</td>
+                    <td>${emp.goalEvidence}</td>
+                    <td>${emp.selfRating}</td>
+                    <td>${generateRatingDropdown(emp.managerRating, 'manager-rating')}</td>
+                    <td><input type="number" min="70" max="120" class="score" value="${emp.score}" style="width: 70px;"></td>
+                    <td id="pay-${emp.id}">${formatCurrency(emp.payAmount)}</td>
+                </tr>
+                `;
+            });
+            
+            managerTableBody.innerHTML = html;
+            
+            // Update budget numbers and styling
+            const budget = calculateBudget(managerEmployees);
+            updateBudgetDisplay(budget);
+            updateRowStyles(managerTableBody, budget.remaining < 0);
+            
+            // Add listeners to score inputs
+            document.querySelectorAll('.score').forEach(input => {
+                input.addEventListener('change', function() {
+                    const tr = this.closest('tr');
+                    const employeeId = parseInt(tr.dataset.employeeId);
+                    const score = parseInt(this.value);
+                    
+                    // Validate score within range
+                    if (score < 70) this.value = 70;
+                    if (score > 120) this.value = 120;
+                    
+                    // Update pay percentage and amount
+                    const employee = employees.find(emp => emp.id === employeeId);
+                    if (employee) {
+                        employee.score = parseInt(this.value);
+                        employee.payPercentage = employee.score;
+                        employee.payAmount = (employee.baseSalary * employee.payPercentage / 100);
+                        document.getElementById(`pay-${employeeId}`).textContent = formatCurrency(employee.payAmount);
+                        
+                        // Update manager rating based on score
+                        const managerRatingSelect = tr.querySelector('.manager-rating');
+                        if (score >= 110) {
+                            managerRatingSelect.value = "Exceeds";
+                            employee.managerRating = "Exceeds";
+                        } else if (score >= 96) {
+                            managerRatingSelect.value = "Meets";
+                            employee.managerRating = "Meets";
+                        } else {
+                            managerRatingSelect.value = "Does Not Meet";
+                            employee.managerRating = "Does Not Meet";
+                        }
+                        
+                        // Update last modified time
+                        employee.lastModified = new Date().toISOString();
+                        
+                        // Update budget and styling
+                        const budget = calculateBudget(managerEmployees);
+                        updateBudgetDisplay(budget);
+                        updateRowStyles(managerTableBody, budget.remaining < 0);
+                        
+                        // Show sync notification, but only if not already shown
+                        if (!notificationShown) {
+                            showNotification();
+                            notificationShown = true;
+                        }
+                    }
+                });
+            });
+            
+            // Add listeners to manager rating dropdown
+            document.querySelectorAll('.manager-rating').forEach(select => {
+                select.addEventListener('change', function() {
+                    const tr = this.closest('tr');
+                    const employeeId = parseInt(tr.dataset.employeeId);
+                    const employee = employees.find(emp => emp.id === employeeId);
+                    const scoreInput = tr.querySelector('.score');
+                    
+                    if (employee) {
+                        employee.managerRating = this.value;
+                        
+                        // Adjust score based on rating
+                        if (this.value === "Exceeds") {
+                            scoreInput.value = Math.max(110, employee.score);
+                        } else if (this.value === "Meets") {
+                            scoreInput.value = Math.min(Math.max(96, employee.score), 109);
+                        } else {
+                            scoreInput.value = Math.min(employee.score, 95);
+                        }
+                        
+                        // Trigger the score change event
+                        const event = new Event('change');
+                        scoreInput.dispatchEvent(event);
+                        
+                        // Update last modified time
+                        employee.lastModified = new Date().toISOString();
+                    }
+                });
+            });
+        }
+        
+        // Generate dropdown for rating
+        function generateRatingDropdown(selected, className) {
+            let html = `<select class="${className}">`;
+            ratingOptions.forEach(rating => {
+                html += `<option value="${rating}" ${rating === selected ? 'selected' : ''}>${rating}</option>`;
+            });
+            html += `</select>`;
+            return html;
+        }
+        
+        // Generate dropdown for OKR goals
+        function generateOkrGoalDropdown(selected) {
+            let html = `<select class="okr-goal">`;
+            okrGoals.forEach(goal => {
+                html += `<option value="${goal}" ${goal === selected ? 'selected' : ''}>${goal}</option>`;
+            });
+            html += `</select>`;
+            return html;
+        }
+        
+        // Render employee view
+        function renderEmployeeView(employeeId) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            const employeeTableBody = document.getElementById('employee-table-body');
+            
+            if (!employee) {
+                employeeTableBody.innerHTML = '<tr><td colspan="7">No data available</td></tr>';
+                return;
+            }
+            
+            let html = `
+            <tr>
+                <td>${employee.name}</td>
+                <td>${employee.managerRating}</td>
+                <td>${employee.score}</td>
+                <td>${formatCurrency(employee.payAmount)}</td>
+                <td>${generateOkrGoalDropdown(employee.okrGoal)}</td>
+                <td><input type="text" class="goal-evidence" value="${employee.goalEvidence}"></td>
+                <td>${generateRatingDropdown(employee.selfRating, 'self-rating')}</td>
+            </tr>
+            `;
+            
+            employeeTableBody.innerHTML = html;
+            
+            // Add listeners to editable fields
+            document.querySelectorAll('.okr-goal, .goal-evidence, .self-rating').forEach(input => {
+                input.addEventListener('change', function() {
+                    if (this.classList.contains('okr-goal')) {
+                        employee.okrGoal = this.value;
+                    } else if (this.classList.contains('goal-evidence')) {
+                        employee.goalEvidence = this.value;
+                    } else if (this.classList.contains('self-rating')) {
+                        employee.selfRating = this.value;
+                    }
+                    
+                    // Update last modified time
+                    employee.lastModified = new Date().toISOString();
+                    
+                    // Show sync notification, but only if not already shown
+                    if (!notificationShown) {
+                        showNotification();
+                        notificationShown = true;
+                    }
+                });
+            });
+        }
+        
+        // Render SharePoint list
+        function renderSharePointList() {
+            const spTableBody = document.getElementById('sp-table-body');
+            let html = '';
+            
+            // Sort by last modified date
+            const sortedEmployees = [...employees].sort((a, b) => 
+                new Date(b.lastModified) - new Date(a.lastModified)
+            );
+            
+            sortedEmployees.forEach(emp => {
+                const manager = managers.find(mgr => mgr.employeeIds.includes(emp.id));
+                
+                html += `
+                <tr>
+                    <td>${emp.name}</td>
+                    <td>${manager ? manager.name : 'Unassigned'}</td>
+                    <td>${emp.okrGoal}</td>
+                    <td>${emp.goalEvidence}</td>
+                    <td>${emp.selfRating}</td>
+                    <td>${emp.managerRating}</td>
+                    <td>${emp.score}</td>
+                    <td>${formatCurrency(emp.payAmount)}</td>
+                    <td>${formatDate(emp.lastModified)}</td>
+                </tr>
+                `;
+            });
+            
+            spTableBody.innerHTML = html;
+        }
+        
+        // Show notification
+        function showNotification() {
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Start button click event
+        startBtn.addEventListener('click', function() {
+            const email = emailInput.value || 'john.manager@example.com';
+            isAdmin = adminCheckbox.checked;
+            
+            const name = getNameFromEmail(email);
+            userInfo.textContent = name;
+            
+            // For demo, always use John Manager
+            currentUser = managers[0];
+            
+            // Show action buttons
+            sharepointBtn.classList.remove('hidden');
+            flowBtn.classList.remove('hidden');
+            
+            // Set tabs visibility
+            tabsContainer.style.display = isAdmin ? 'flex' : 'none';
+            
+            if (isAdmin) {
+                renderManagerView(currentUser.id);
+            } else {
+                showScreen('employee');
+                renderEmployeeView(employees[0].id);
+            }
+            
+            // Hide start screen, show main app
+            startScreen.classList.remove('visible');
+            startScreen.classList.add('hidden');
+            
+            mainApp.classList.remove('hidden');
+            mainApp.classList.add('visible');
+        });
+        
+        // Tab click events
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                showScreen(tabName);
+                
+                // Render appropriate view
+                if (tabName === 'manager' && currentUser) {
+                    renderManagerView(currentUser.id);
+                } else if (tabName === 'employee' && currentUser) {
+                    renderEmployeeView(employees[0].id);
+                }
+            });
+        });
+        
+        // Show specific screen
+        function showScreen(screenName) {
+            managerScreen.classList.remove('visible');
+            employeeScreen.classList.remove('visible');
+            
+            if (screenName === 'manager') {
+                managerScreen.classList.add('visible');
+            } else if (screenName === 'employee') {
+                employeeScreen.classList.add('visible');
+            }
+        }
+        
+        // SharePoint button click event
+        sharepointBtn.addEventListener('click', function() {
+            renderSharePointList();
+            sharepointModal.style.display = 'flex';
+        });
+        
+        // Flow button click event
+        flowBtn.addEventListener('click', function() {
+            flowModal.style.display = 'flex';
+        });
+        
+        // Close modals
+        closeModalButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const modalId = this.dataset.modal;
+                document.getElementById(modalId).style.display = 'none';
+            });
+        });
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target === sharepointModal) {
+                sharepointModal.style.display = 'none';
+            } else if (event.target === flowModal) {
+                flowModal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Architecture Overview
 ## System Architecture
-The Performance Review App consists of three core components that work together to create a unified performance management solution:
+The Performance Review App consists of three core components that work together to create a unified performance management solution.
 
 The User Interface Layer is implemented as a Power Apps mockup using HTML, CSS, and JavaScript to create a responsive frontend that adapts to both desktop and mobile devices. This layer handles the presentation logic including role-based view rendering that shows different interfaces for managers and employees. Client-side data validation ensures data integrity while real-time budget calculations provide immediate feedback as managers allocate compensation. Interactive form controls including dropdowns, input fields, and table views create an intuitive user experience with immediate visual feedback.
 

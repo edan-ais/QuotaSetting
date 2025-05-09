@@ -1,11 +1,11 @@
 ## Terms of Use
-Last Updated: 05-07-2025
+Last Updated: 05-08-2025
 
 ## 1. Acceptance of Terms
-By accessing or using the DataSpace demonstration ("Demo"), you agree to be bound by these Terms of Use. If you do not agree with any part of these terms, you may not access or use the Demo.
+By accessing or using the Performance Review App demonstration ("Demo"), you agree to be bound by these Terms of Use. If you do not agree with any part of these terms, you may not access or use the Demo.
 
 ## 2. Intellectual Property Rights
-The DataSpace technology is the subject of a provisional patent application [APPLICATION NUMBER] filed with [PATENT OFFICE] on [FILING DATE] and is protected by copyright and other intellectual property laws. All rights, title, and interest in and to the Demo and its contents, features, and functionality are owned by Analytic Intelligence Solutions and are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
+The Performance Review App demonstration is protected by copyright and other intellectual property laws. All rights, title, and interest in and to the Demo and its contents, features, and functionality are owned by the creator and are protected by United States and international copyright, trademark, and other intellectual property or proprietary rights laws.
 
 ## 3. Limited License
 You are granted a limited, non-exclusive, non-transferable, revocable license to access and use the Demo for personal, non-commercial evaluation purposes only. This license is subject to these Terms of Use and does not include:
@@ -38,4 +38,4 @@ We reserve the right, at our sole discretion, to modify or replace these Terms a
 These Terms shall be governed by and construed in accordance with the laws of California, without regard to its conflict of law provisions.
 
 ## 9. Contact Information
-For inquiries regarding these Terms of Use, please contact: edan@analyticintelligencesolutions.com
+For inquiries regarding these Terms of Use, please open an issue in this repository.

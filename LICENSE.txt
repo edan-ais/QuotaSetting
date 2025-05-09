@@ -1,0 +1,25 @@
+Performance Review App Portfolio License
+Copyright (c) 2025 Edan Harr
+
+Permitted Uses
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to:
+
+View, study, and learn from the Software
+Use the Software for personal and educational purposes
+Create and distribute derivative works that substantially modify or build upon the Software
+Fork and modify the Software for portfolio purposes
+Subject to the following conditions:
+
+Conditions
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+Attribution to the original author must be included in any derivative works or substantial adaptations.
+Derivative works must clearly indicate the nature and extent of modifications made to the original Software.
+Restrictions
+The Software in its original or minimally modified form may not be sold, licensed, or distributed commercially.
+"Minimally modified" refers to changes that do not substantially alter the functionality, structure, and appearance of the Software (such as simple rebranding, minor text changes, or cosmetic alterations).
+Commercial use of derivative works is permitted only when the derivative work represents a substantial transformation of the original Software, involving significant independent development.
+Disclaimer
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Additional Terms
+This license is designed for portfolio and educational projects. If you wish to use this Software in ways not permitted by this license, please contact the author for alternative licensing options.

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Performance Review App Mock</title>
+    <title>Employee Onboarding App</title>
     <style>
         :root {
             --intel-blue: #0071c5;
@@ -13,8 +13,10 @@
             --light-gray: #f4f4f4;
             --medium-gray: #dddddd;
             --dark-gray: #333333;
+            --row-yellow: #fff3cd;
+            --row-green: #d4edda;
             --error-red: #d32f2f;
-            --error-light: #ffebee;
+            --success-green: #4CAF50;
         }
         
         * {
@@ -35,31 +37,48 @@
         }
         
         .app-header {
-            background-color: var(--intel-blue);
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .app-title {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
+    background-color: var(--intel-blue);
+    color: white;
+    padding: 10px 20px;
+}
+
+.app-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 200px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 200px;
+    justify-content: flex-end;
+}      
+
         .action-buttons {
             display: flex;
             gap: 10px;
         }
         
-        .header-btn {
+        .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        .btn {
             background-color: white;
             color: var(--intel-blue);
             border: none;
@@ -67,51 +86,33 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5 rem;
         }
         
-        .header-btn:hover {
+        .btn:hover {
             background-color: #f0f0f0;
         }
         
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        
-        .tab {
-            padding: 12px 24px;
+        .btn:disabled {
             background-color: var(--medium-gray);
-            cursor: pointer;
-            border: none;
-            outline: none;
-        }
-        
-        .tab.active {
-            background-color: var(--intel-blue);
-            color: white;
-        }
-        
-        .tab:first-child {
-            border-top-left-radius: 5px;
-            border-bottom-left-radius: 5px;
-        }
-        
-        .tab:last-child {
-            border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
+            color: var(--dark-gray);
+            cursor: not-allowed;
         }
         
         .start-screen {
             text-align: center;
-            padding: 100px 20px;
-            background-color: white;
+            padding: 230px 20px;
+            background-color: var(--intel-blue);
+            color: white;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         
         .start-btn {
-            background-color: var(--intel-blue);
-            color: white;
+            background-color: white;
+            color: var(--intel-blue);
             padding: 12px 30px;
             border: none;
             border-radius: 5px;
@@ -121,16 +122,7 @@
         }
         
         .start-btn:hover {
-            background-color: var(--intel-dark-blue);
-        }
-        
-        .sync-notice {
-            background-color: var(--lighter-blue);
-            border-left: 4px solid var(--intel-blue);
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: var(--dark-gray);
+            background-color: #f0f0f0;
         }
         
         .screen {
@@ -140,64 +132,83 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
             min-height: 500px;
+            position: relative;
         }
+
+#employeeApp {
+    min-height: 630px;
+}
         
-        .screen-header {
+        .tabs {
+            position: absolute;
+            left: -40px;
+            top: 20px;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
         }
         
-        .screen-title {
-            font-size: 24px;
-            margin: 0;
-        }
-        
-        .budget-info {
+        .tab {
+            width: 40px;
+            height: 120px;
             background-color: var(--intel-blue);
             color: white;
-            padding: 15px;
-            border-radius: 5px;
-            width: 300px;
-        }
-        
-        .budget-info.negative {
-            background-color: var(--error-red);
-        }
-        
-        .budget-item {
+            border: none;
+            border-radius: 5px 0 0 5px;
+            cursor: pointer;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
         
-        .budget-item:last-child {
-            margin-bottom: 0;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        .tab.active {
+            background-color: var(--intel-dark-blue);
         }
         
         .table-container {
             overflow-x: auto;
-            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* Fixed height for employee gallery to show 3 rows */
+        #employeeGallery-container {
+            height: 170px; /* Increased to eliminate scrolling */
+            overflow-y: hidden;
+            margin-bottom: 10px;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            background-color: var(--lighter-blue);
+            background-color: white;
+            table-layout: fixed;
+        }
+        
+        /* Adjusted column widths to prevent horizontal scrolling */
+        #employeeGallery th, #employeeGallery td {
+            max-width: 90px; /* Made cells narrower */
+            overflow: hidden;
+            text-overflow: clip;
+            white-space: nowrap;
+            font-size: 13px; /* Slightly smaller font */
         }
         
         th {
             background-color: var(--intel-blue);
             color: white;
-            padding: 12px;
+            padding: 12px 8px; /* Reduced horizontal padding */
             text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
         
         td {
-            padding: 12px;
+            padding: 12px 8px; /* Reduced horizontal padding */
             border-bottom: 1px solid var(--medium-gray);
         }
         
@@ -205,20 +216,35 @@
             background-color: var(--light-gray);
         }
         
-        tr.over-budget {
-            background-color: var(--error-light);
-            color: var(--error-red);
+        /* Ensure row coloration is always visible */
+        tr.normal {
+            background-color: var(--lighter-blue) !important;
         }
         
-        tr.over-budget:hover {
-            background-color: #ffdde0;
+        tr.yellow {
+            background-color: var(--row-yellow) !important;
+        }
+        
+        tr.green {
+            background-color: var(--row-green) !important;
+        }
+        
+        tr.selected {
+            outline: 2px solid var(--intel-blue);
+            font-weight: bold;
         }
         
         select, input {
-            padding: 8px;
+            padding: 6px; /* Reduced padding for inputs */
             border: 1px solid var(--medium-gray);
             border-radius: 4px;
             width: 100%;
+            font-size: 13px; /* Slightly smaller font */
+        }
+        
+        select.error, input.error {
+            border: 1px solid var(--error-red);
+            background-color: rgba(211, 47, 47, 0.1);
         }
         
         .hidden {
@@ -263,41 +289,210 @@
             color: var(--dark-gray);
         }
         
-        .sharepoint-header {
-            background-color: #f0f0f0;
-            padding: 10px 15px;
-            border-bottom: 1px solid #ddd;
+        .process-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+    align-items: stretch;
+    height: 400px; /* Add a fixed height */
+}
+        
+        .section {
+    flex: 1;
+    min-width: 340px;
+    background-color: var(--lighter-blue);
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Add this */
+}
+        
+        .section-title {
+    font-weight: bold;
+    color: var(--intel-blue);
+    padding-bottom: 5px;
+    margin-bottom: 10px; /* Further reduced margin */
+    border-bottom: 1px solid var(--intel-light-blue);
+}
+        
+        .horizontal-divider {
+            height: 1px;
+            background-color: var(--medium-gray);
+            margin: 20px 0;
+        }
+        
+        .checkbox-group {
+            margin-bottom: 10px; /* Reduced margin */
+        }
+        
+        .checkbox-container {
             display: flex;
+            align-items: center;
+            margin-bottom: 6px; /* Reduced margin */
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+        
+        .input-group {
+            margin-bottom: 10px; /* Reduced margin */
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 6px; /* Reduced margin */
             align-items: center;
         }
         
-        .sharepoint-logo {
-            margin-right: 15px;
-            font-weight: bold;
+        .input-row label {
+            min-width: 80px; /* Made labels narrower */
+            color: var(--dark-gray);
+            font-size: 13px; /* Slightly smaller font */
+        }
+        
+        .input-row input {
+            flex: 1;
+        }
+        
+        .search-container {
+            position: relative;
+            margin-right: 10px;
+        }
+        
+        .search-box {
+            padding: 8px;
+            border-radius: 4px;
+            border: none;
+            width: 200px;
+        }
+        
+        .sort-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .sort-btn {
+            background-color: white;
             color: var(--intel-blue);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .sharepoint-title {
-            font-size: 20px;
+        .sort-btn:hover {
+            background-color: #f0f0f0;
         }
         
-        .sp-table {
+        .sub-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1px;
+    height: 100%;
+}
+
+.sub-table th {
+    background-color: var(--intel-dark-blue);
+    padding: 8px; /* Reduced padding */
+    font-size: 10px;
+}
+
+.sub-table td {
+    padding: 8px; /* Reduced padding */
+    font-size: 13px;
+    height: 33.33%; /* Make rows take up equal height */
+}
+
+#planTable {
+    height: 240px !important; /* INCREASED FROM 180px to 260px */
+    table-layout: fixed !important;
+}
+
+#planTable thead {
+    height: 40px !important; /* Fixed header height */
+}
+
+#planTable tbody {
+    height: 140px !important; /* Fixed body height */
+}
+
+#planTable tr {
+    height: 46px !important; /* Fixed row height */
+}
+
+#planTable th, #planTable td {
+    height: 46px !important; /* Fixed cell height */
+    line-height: 1.2 !important; /* Constrained line height */
+    padding: 0 8px !important; /* Reduced padding, fixed horizontal only */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Add column width specifications */
+#planTable th:nth-child(1), #planTable td:nth-child(1) {
+    width: 30% !important; /* Plan column */
+}
+#planTable th:nth-child(2), #planTable td:nth-child(2) {
+    width: 20% !important; /* Quota % column - make this narrower */
+}
+#planTable th:nth-child(3), #planTable td:nth-child(3) {
+    width: 50% !important; /* Accounts & Quotas column - make this wider */
+}
+
+/* Override any other potential styles */
+#planTable td div, #planTable td span, #planTable td p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+        
+        #submitBtn, .submit-btn {
+            background-color: var(--intel-blue);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 30px;
             width: 100%;
-            border-collapse: collapse;
+        }
+        
+        #submitBtn:disabled, .submit-btn:disabled {
+            background-color: var(--medium-gray);
+            color: var(--dark-gray);
+            cursor: not-allowed;
+        }
+        
+        .note {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: var(--lighter-blue);
+            border-left: 4px solid var(--intel-blue);
+            font-size: 14px;
+            color: var(--dark-gray);
+        }
+        
+        .email-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-top: 20px;
         }
         
-        .sp-table th {
-            background-color: #f0f0f0;
-            color: #333;
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .sp-table td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+        .date-info {
+            font-size: 14px;
+            color: var(--dark-gray);
         }
         
         /* Flow diagram styles */
@@ -347,14 +542,9 @@
             border: 1px solid var(--intel-light-blue);
         }
         
-        .flow-condition {
+        .flow-email {
             background-color: #f3e5f5;
             border: 1px solid #9c27b0;
-        }
-        
-        .flow-sharepoint {
-            background-color: #e8f5e9;
-            border: 1px solid #4caf50;
         }
         
         .step-title {
@@ -367,53 +557,370 @@
             color: #555;
         }
         
-        .flow-schedule {
-            width: 100%;
-            margin-top: 20px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        .sharepoint-header {
+            background-color: #f0f0f0;
             padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
         
-        .flow-schedule-title {
+        .sharepoint-logo {
+            margin-right: 15px;
             font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .sharepoint-title {
+            font-size: 20px;
+        }
+        
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .excel-table th {
+            background-color: #E2EFDA;
+            color: #333;
+            border: 1px solid #999;
+            padding: 10px;
+        }
+
+#sharepointTable th {
+    background-color: var(--intel-blue);
+    color: white;
+}
+        
+        .excel-table td {
+            border: 1px solid #999;
+            padding: 10px;
+        }
+        
+        .email-preview {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: white;
+        }
+        
+        .email-header {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
             margin-bottom: 10px;
         }
         
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #4CAF50;
+        /* Make all sections equal height */
+        .process-sections {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            align-items: stretch;
+        }
+        
+        #employeeSection {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+        
+        #planTableContainer {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+    height: auto;
+    overflow: visible;
+}
+        
+        #planTableContainer .table-container {
+    max-height: none;
+    margin-bottom: 0;
+    overflow: visible;
+    height: auto;
+}
+        
+        /* Add spacer to align height */
+        .spacer {
+            flex-grow: 1;
+        }
+        
+        /* Employee workflow steps */
+        .step-bars {
+            display: flex;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .step-bar {
+            text-align: center;
+            padding: 10px;
+            background-color: var(--medium-gray);
+            color: var(--dark-gray);
+            position: relative;
+        }
+        
+        /* Step bars sized to match their sections */
+        .step-bar.step1 {
+            width: 16.66%;
+        }
+        
+        .step-bar.step2 {
+            width: 16.66%;
+        }
+        
+        .step-bar.step3 {
+            width: 66.68%; /* Make step 3 take the remaining width */
+        }
+        
+        .step-bar.active {
+            background-color: var(--intel-blue);
             color: white;
-            padding: 15px 20px;
+        }
+        
+        .step-bar.completed {
+            background-color: var(--success-green);
+            color: white;
+        }
+        
+        .step-bar.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .step-bar:not(:last-child):after {
+            content: "";
+            position: absolute;
+            right: -15px;
+            top: 0;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+            border-left: 15px solid var(--medium-gray);
+            z-index: 1;
+        }
+        
+        .step-bar.active:not(:last-child):after {
+            border-left-color: var(--intel-blue);
+        }
+        
+        .step-bar.completed:not(:last-child):after {
+            border-left-color: var(--success-green);
+        }
+        
+        /* Modified for always visible steps */
+        .workflow-steps-container {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .workflow-step {
+            background-color: var(--lighter-blue);
             border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            display: none;
-            z-index: 1100;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Step 1 and 2 combined take 1/3 of the width */
+        .workflow-step.narrow {
+            width: calc(16.66% - 10px);
+            flex-shrink: 0;
+        }
+
+#step2 {
+    height: 510px; /* This will only apply to Step 2 */
+}
+        
+        /* Step 3 takes 2/3 of the width */
+        .workflow-step.wide {
+            flex-grow: 1;
+        }
+        
+        .workflow-step.empty {
+            background-color: white;
+            box-shadow: none;
+        }
+        
+        .employee-list-container {
+            width: 100%;
+            height: 370px;
+            overflow-y: auto;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .employee-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .employee-list li {
+            padding: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+            cursor: pointer;
+        }
+        
+        .employee-list li:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .employee-list li.selected {
+            background-color: var(--lighter-blue);
+            font-weight: bold;
+        }
+        
+        .plan-selection {
+            margin-bottom: 20px;
+}
+        
+        .plan-details {
+            background-color: var(--lighter-blue);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
+        /* Restructured quota allocation to be more table-like */
+        .quota-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .quota-table th {
+            background-color: var(--intel-blue);
+            color: white;
+            padding: 8px;
+            text-align: left;
+            font-size: 13px;
+        }
+        
+        .quota-table td {
+            padding: 8px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        .quota-name {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .quota-percentage, .quota-accounts {
+            width: 33%;
+        }
+        
+        .quota-allocation-title {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .total-percentage {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            background-color: var(--error-red);
+            color: white;
+        }
+        
+        .total-percentage.complete {
+            background-color: var(--success-green);
+        }
+        
+        .quota-target {
+            margin-left: 10px;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background-color: var(--error-red);
+            color: white;
+        }
+        
+        .quota-target.met {
+            background-color: var(--success-green);
+        }
+        
+        .help-modal-content {
+            max-width: 600px;
+        }
+        
+        .help-title {
+            color: var(--intel-blue);
+            margin-bottom: 15px;
+        }
+        
+        .help-text {
+            margin-bottom: 20px;
+        }
+        
+        .help-list {
+            padding-left: 20px;
+        }
+        
+        .help-list li {
+            margin-bottom: 10px;
+        }
+        
+        .help-action {
+            font-weight: bold;
+            color: var(--intel-blue);
+        }
+        
+        /* Email modal specific styles */
+        .email-form textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        .email-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .email-form input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+        }
+        
+        /* Table of existing managers/employees */
+        .sharepoint-display {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .sharepoint-display h3 {
+            color: var(--intel-blue);
+            margin-bottom: 10px;
         }
         
         @media (max-width: 768px) {
-            .table-container {
-                overflow-x: scroll;
-            }
-            
             .app-title {
                 font-size: 20px;
             }
             
-            .tab {
-                padding: 10px 15px;
-            }
-            
-            .budget-info {
-                width: 100%;
-                margin-top: 15px;
-            }
-            
-            .screen-header {
+            .process-sections {
                 flex-direction: column;
+            }
+            
+            .section {
+                width: 100%;
             }
             
             .modal-content {
@@ -421,384 +928,2447 @@
                 max-height: 95vh;
             }
             
-            .action-buttons {
-                margin-top: 10px;
+            .workflow-steps-container {
+                flex-direction: column;
             }
             
-            .header-actions {
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 10px;
+            .workflow-step.narrow, 
+            .workflow-step.wide {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="app-header">
-        <div class="app-title">Performance Review App</div>
-        <div class="header-actions">
-            <div id="user-info"></div>
-            <div class="action-buttons">
-                <button id="sharepoint-btn" class="header-btn hidden">View SharePoint List</button>
-                <button id="flow-btn" class="header-btn hidden">View Power Automate Flow</button>
+    <div class="app-header" id="appHeader">
+    <!-- Manager Header -->
+    <div id="managerHeader" style="width: 100%; display: flex; justify-content: space-between;">
+        <div class="header-left">
+            <button class="btn" id="exportBtn">
+                <i>📤</i> Export
+            </button>
+            <button class="btn" id="refreshBtn">
+                <i>🔄</i> Refresh
+            </button>
+            <button class="btn" id="importBtn">
+                <i>📥</i> Import
+            </button>
+            <span class="status-indicator" id="statusLight"></span>
+        </div>
+        
+        <div class="app-title">Manager Employee Onboarding</div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Search employees..." id="searchBox">
+            </div>
+            <div class="sort-buttons">
+                <button class="sort-btn" title="Sort by name" onclick="sortEmployees('name')">🔠</button>
+                <button class="sort-btn" title="Sort by status" onclick="sortEmployees('status')">🎨</button>
+                <button class="sort-btn" title="Sort by date" onclick="sortEmployees('date')">📅</button>
+                <button class="sort-btn" title="Default sort" onclick="sortEmployees('default')">⭐</button>
             </div>
         </div>
     </div>
+    
+    <!-- Employee Header -->
+    <div id="employeeHeader" style="width: 100%; display: none; justify-content: space-between;">
+        <div class="header-left">
+            <!-- Empty div to maintain layout -->
+            <div style="width: 20px;"></div>
+        </div>
+        
+        <div class="app-title">Employee Onboarding</div>
+        
+        <div class="header-right">
+            <button class="btn" id="refreshBtn2">
+                <i>🔄</i> Refresh
+            </button>
+            <button class="btn" id="empEmailBtn">
+                <i>📧</i> Send Email
+            </button>
+            <button class="btn" id="helpBtn">
+                <i>❓</i> Help
+            </button>
+        </div>
+    </div>
+</div>
     
     <div class="container">
         <!-- Start Screen -->
-        <div id="start-screen" class="start-screen visible">
-            <h1>Performance Review System</h1>
-            <h2 id="greeting">Hi, John Manager</h2>
-            <button id="start-btn" class="start-btn">Start</button>
-            
-            <!-- Hidden for the final version but kept for testing -->
-            <div style="display: none; margin-top: 20px">
-                <label for="email-input">Your Email (for demo):</label>
-                <input type="email" id="email-input" placeholder="your.name@example.com" value="john.manager@example.com" style="margin-top: 10px; width: 250px;">
-                <div style="margin-top: 10px">
-                    <label>
-                        <input type="checkbox" id="admin-checkbox" checked>
-                        Demo as Admin/Manager
-                    </label>
-                </div>
-            </div>
+        <div id="startScreen" class="start-screen visible">
+            <h1>Employee Onboarding System</h1>
+            <h2>Hi, John Manager</h2>
+            <button class="start-btn" id="startBtn">Start</button>
         </div>
         
-        <!-- Main App -->
-        <div id="main-app" class="hidden">
-            <!-- Tabs - Only visible for admin -->
-            <div id="tabs" class="tabs">
-                <button class="tab active" data-tab="manager">Manager View</button>
-                <button class="tab" data-tab="employee">Employee View</button>
+        <!-- Manager App -->
+        <div id="managerApp" class="screen">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" id="managerTab">Manager</button>
+                <button class="tab" id="employeeTab">Employee</button>
             </div>
             
-            <!-- Manager Screen -->
-            <div id="manager-screen" class="screen visible">
-                <div class="sync-notice">
-                    <strong>Note:</strong> This app synchronizes with SharePoint twice daily (8:00 AM and 8:00 PM). Any changes you make will be reflected in SharePoint during the next scheduled update.
-                </div>
-                
-                <div class="screen-header">
-                    <h2 class="screen-title">Team Performance Reviews</h2>
-                    <div id="budget-info" class="budget-info">
-                        <div class="budget-item">
-                            <span>Pay Budget:</span>
-                            <span id="budget-total">$10,000</span>
-                        </div>
-                        <div class="budget-item">
-                            <span>Remaining:</span>
-                            <span id="budget-remaining">$10,000</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="table-container">
-                    <table id="manager-table">
-                        <thead>
-                            <tr>
-                                <th>Employee</th>
-                                <th>OKR Goal</th>
-                                <th>Goal Evidence</th>
-                                <th>Employee Rating</th>
-                                <th>Manager Rating</th>
-                                <th>Score</th>
-                                <th>Pay Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="manager-table-body">
-                            <!-- Will be populated with JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Employee Screen -->
-            <div id="employee-screen" class="screen">
-                <div class="sync-notice">
-                    <strong>Note:</strong> This app synchronizes with SharePoint twice daily (8:00 AM and 8:00 PM). Any changes you make will be reflected in SharePoint during the next scheduled update.
-                </div>
-                
-                <div class="screen-header">
-                    <h2 class="screen-title">My Performance Review</h2>
-                </div>
-                
-                <div class="table-container">
-                    <table id="employee-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Manager Rating</th>
-                                <th>Score</th>
-                                <th>Pay Amount</th>
-                                <th>OKR Goal</th>
-                                <th>Goal Evidence</th>
-                                <th>Self Rating</th>
-                            </tr>
-                        </thead>
-                        <tbody id="employee-table-body">
-                            <!-- Will be populated with JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- SharePoint List Modal -->
-    <div id="sharepoint-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" data-modal="sharepoint-modal">&times;</span>
-            
-            <div class="sharepoint-header">
-                <div class="sharepoint-logo">SharePoint</div>
-                <div class="sharepoint-title">Performance Reviews - All Items</div>
-            </div>
-            
-            <div id="sp-table-container">
-                <table class="sp-table">
+            <!-- Employee Gallery/Table -->
+            <div id="employeeGallery-container">
+                <table id="employeeGallery">
                     <thead>
                         <tr>
-                            <th>Employee</th>
+                            <th>Name</th>
+                            <th>WWID</th>
+                            <th>Geo</th>
+                            <th>Group</th>
+                            <th>Team</th>
+                            <th>Org</th>
                             <th>Manager</th>
-                            <th>OKR Goal</th>
-                            <th>Goal Evidence</th>
-                            <th>Self Rating</th>
-                            <th>Manager Rating</th>
-                            <th>Score</th>
-                            <th>Pay Amount</th>
-                            <th>Last Modified</th>
+                            <th>Start</th>
+                            <th>Process</th>
+                            <th>M.Email</th>
+                            <th>Remind</th>
+                            <th>E.Email</th>
+                            <th>Export</th>
                         </tr>
                     </thead>
-                    <tbody id="sp-table-body">
-                        <!-- Will be populated with JS -->
+                    <tbody id="employeeList">
+                        <!-- Employee rows will be added dynamically -->
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
-    
-    <!-- Power Automate Flow Modal -->
-    <div id="flow-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" data-modal="flow-modal">&times;</span>
             
-            <div class="sharepoint-header">
-                <div class="sharepoint-logo" style="color: #8c65d3;">Power Automate</div>
-                <div class="sharepoint-title">Performance Review Sync Flow</div>
+            <!-- Process Sections -->
+            <div class="process-sections">
+                <!-- Section 1: Manager Information -->
+                <div class="section" id="managerSection">
+                    <div class="section-title">Manager Information</div>
+                    
+                    <div class="checkbox-group">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="skipAll">
+                            <label for="skipAll">Deferred Onboarding</label>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="input-row">
+                            <label for="empWWID">WWID:</label>
+                            <input type="text" id="empWWID">
+                        </div>
+                        <div class="input-row">
+                            <label for="empName">Name:</label>
+                            <input type="text" id="empName">
+                        </div>
+                        <div class="input-row">
+                            <label for="empGeo">Geo:</label>
+                            <input type="text" id="empGeo">
+                        </div>
+                        <div class="input-row">
+                            <label for="empTeam">Team:</label>
+                            <input type="text" id="empTeam">
+                        </div>
+                    </div>
+                    
+                    <div class="section-title">Manager Email</div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn" id="managerEmailBtn">
+                            <i>📧</i> Send Email to Manager
+                        </button>
+                        <button class="btn" id="reminderBtn">
+                            <i>🔔</i> Send Reminder
+                        </button>
+                    </div>
+                    
+                    <div class="email-info">
+                        <div class="date-info">
+                            Last email: <span id="lastEmailDate">None</span>
+                        </div>
+                        <div>
+                            Emails sent: <span id="emailCount">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="spacer"></div>
+                </div>
+                
+                <div class="horizontal-divider"></div>
+                
+                <!-- Section 2: Employee Information -->
+                <div class="section" id="employeeSection">
+                    <div class="section-title">Employee Information</div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn" id="employeeEmailBtn">
+                            <i>📧</i> Send Email to Employee
+                        </button>
+                    </div>
+                    
+                    <div class="section-title" style="margin-top: 10px;">Plan Table</div>
+
+<div id="planTableContainer" style="margin-top: 5px;">
+    <div class="table-container">
+        <table class="sub-table" id="planTable">
+            <thead>
+                <tr>
+                    <th>Plan</th>
+                    <th>Quota %</th>
+                    <th>Accounts & Quotas</th>
+                </tr>
+            </thead>
+            <tbody id="planList">
+                <!-- Plan rows will be populated dynamically -->
+            </tbody>
+        </table>
+    </div>
+</div>
+                    
+                    <div class="spacer"></div>
+                </div>
+                
+                <div class="horizontal-divider"></div>
+                
+                <!-- Section 3: Process Tracking -->
+                <div class="section" id="processSection">
+                    <div class="section-title">Process Tracking</div>
+                    
+                    <div class="checkbox-group">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="planAcknowledged">
+                            <label for="planAcknowledged">Employee acknowledged plan</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="addedToQST">
+                            <label for="addedToQST">Added to QST</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="addedToCRC">
+                            <label for="addedToCRC">Added to CRC</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="filledVaricent">
+                            <label for="filledVaricent">Filled info in Varicent</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="exported">
+                            <label for="exported">Exported</label>
+                        </div>
+                    </div>
+                    
+                    <button id="submitBtn" disabled>Submit</button>
+                    
+                    <div class="note" id="preSubmitNote">
+                        <strong>NOTE:</strong> Ensure all employee information is complete before submitting. The app will commit any changes made after the submit button is triggered.
+                    </div>
+                    
+                    <div class="note" id="submitNote" style="display: none;">
+                        <strong>NOTE:</strong> This employee will be removed from the tool and their information will be committed to commissions for tracking and compensation purposes.
+                    </div>
+                    
+                    <div class="spacer"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Employee app view -->
+        <div id="employeeApp" class="screen">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab" id="managerTabEmp">Manager</button>
+                <button class="tab active" id="employeeTabEmp">Employee</button>
             </div>
             
-            <div class="flow-diagram">
-                <div class="flow-title">Data Synchronization Flow Steps</div>
-                
-                <div class="flow-vertical">
-                    <div class="flow-step-vertical flow-trigger">
-                        <div class="step-title">Trigger: Recurrence</div>
-                        <div class="step-description">Run twice daily at 8:00 AM and 8:00 PM</div>
-                    </div>
-                    
-                    <div class="flow-step-vertical flow-action">
-                        <div class="step-title">Action: Get PowerApps Records</div>
-                        <div class="step-description">Connect to PowerApps and retrieve all performance review records</div>
-                    </div>
-                    
-                    <div class="flow-step-vertical flow-condition">
-                        <div class="step-title">Condition: Check for Changes</div>
-                        <div class="step-description">Compare PowerApps data with existing SharePoint records</div>
-                    </div>
-                    
-                    <div class="flow-step-vertical flow-action">
-                        <div class="step-title">Apply to Each: Process Records</div>
-                        <div class="step-description">Loop through each record that needs updating</div>
-                    </div>
-                    
-                    <div class="flow-step-vertical flow-condition">
-                        <div class="step-title">Condition: Record Type</div>
-                        <div class="step-description">Determine if record is for manager view or employee view</div>
-                    </div>
-                    
-                    <div class="flow-step-vertical flow-action">
-                        <div class="step-title">Action: Create Security Copies</div>
-                        <div class="step-description">Generate the four security-specific versions of each record</div>
-                    </div>
-                    
-                    <div class="flow-step-vertical flow-sharepoint">
-                        <div class="step-title">SharePoint: Update or Create Items</div>
-                        <div class="step-description">Update existing SharePoint items or create new ones with appropriate permissions</div>
-                    </div>
-                    
-                    <div class="flow-step-vertical flow-action">
-                        <div class="step-title">Action: Set Item-Level Permissions</div>
-                        <div class="step-description">Apply specific read/write permissions to each record</div>
-                    </div>
-                    
-                    <div class="flow-step-vertical flow-condition">
-                        <div class="step-title">Condition: Check for Errors</div>
-                        <div class="step-description">Verify all records were successfully processed</div>
-                    </div>
-                    
-                    <div class="flow-step-vertical flow-action">
-                        <div class="step-title">Action: Send Notification</div>
-                        <div class="step-description">Alert system administrator of any synchronization issues</div>
+            <!-- Step workflow bar -->
+            <div class="step-bars">
+                <div class="step-bar step1 active" id="step1Bar">Step 1: Select Employee</div>
+                <div class="step-bar step2 disabled" id="step2Bar">Step 2: Validate Information</div>
+                <div class="step-bar step3 disabled" id="step3Bar">Step 3: Assign Quotas</div>
+            </div>
+            
+            <!-- All steps in a horizontal row, always visible -->
+            <div class="workflow-steps-container">
+                <!-- Step 1: Select Employee -->
+                <div class="workflow-step narrow" id="step1">
+                    <h3>Select Your Name</h3>
+                    <div class="employee-list-container">
+                        <ul class="employee-list" id="empWorkflowList">
+                            <!-- Employee list will be populated here -->
+                        </ul>
                     </div>
                 </div>
                 
-                <div class="flow-diagram" style="margin-top: 40px;">
-                    <div class="flow-title">Security Implementation</div>
-                    <p>Due to SharePoint's security model, the flow creates four copies of each record:</p>
-                    
-                    <table class="sp-table" style="margin-top: 15px;">
+                <!-- Step 2: Completely white until accessed -->
+                <div class="workflow-step narrow empty" id="step2">
+                </div>
+                
+                <!-- Step 3: Completely white until accessed -->
+                <div class="workflow-step wide empty" id="step3">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Export Modal -->
+        <div id="exportModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeExportModal">&times;</span>
+                
+                <div class="sharepoint-header">
+                    <div class="sharepoint-logo" style="color: var(--success-green);">Excel</div>
+                    <div class="sharepoint-title">Exported Employee Data</div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="excel-table" id="excelTable">
                         <thead>
                             <tr>
-                                <th>Copy Purpose</th>
-                                <th>Who Can Edit</th>
-                                <th>Who Can View</th>
+                                <th>Last Name</th>
+                                <th>First Name</th>
+                                <th>Employee ID</th>
+                                <th>Region</th>
+                                <th>Start Date</th>
+                                <th>Plan Code</th>
+                                <th>Account Assignment</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Manager Working Copy</td>
-                                <td>Manager</td>
-                                <td>Manager Only</td>
-                            </tr>
-                            <tr>
-                                <td>Manager Shared Copy</td>
-                                <td>Manager</td>
-                                <td>Manager + Employee</td>
-                            </tr>
-                            <tr>
-                                <td>Employee Working Copy</td>
-                                <td>Employee</td>
-                                <td>Employee Only</td>
-                            </tr>
-                            <tr>
-                                <td>Employee Shared Copy</td>
-                                <td>Employee</td>
-                                <td>Employee + Manager</td>
-                            </tr>
+                        <tbody id="excelData">
+                            <!-- Excel data will be populated here -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+        
+        <!-- SharePoint Modal -->
+        <div id="sharepointModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeSharepointModal">&times;</span>
+                
+                <div class="sharepoint-header">
+                    <div class="sharepoint-logo" style="color: var(--intel-blue);">SharePoint</div>
+                    <div class="sharepoint-title">Employee Onboarding Data</div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="excel-table" id="sharepointTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>WWID</th>
+                                <th>Geo</th>
+                                <th>Team</th>
+                                <th>Start Date</th>
+                                <th>Process Step</th>
+                                <th>Last Modified</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sharepointData">
+                            <!-- SharePoint data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Employee SharePoint Modal -->
+        <div id="employeeSharepointModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeEmployeeSharepointModal">&times;</span>
+                
+                <div class="sharepoint-header">
+                    <div class="sharepoint-logo" style="color: var(--intel-blue);">SharePoint</div>
+                    <div class="sharepoint-title">Employee Plans Data</div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="excel-table" id="empSharepointTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>WWID</th>
+                                <th>Team</th>
+                                <th>Selected Plan</th>
+                                <th>Quota Allocations</th>
+                                <th>Last Modified</th>
+                            </tr>
+                        </thead>
+                        <tbody id="empSharepointData">
+                            <!-- Employee SharePoint data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Flow Modal -->
+        <div id="flowModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeFlowModal">&times;</span>
+                
+                <div class="sharepoint-header">
+                    <div class="sharepoint-logo" style="color: #8c65d3;">Power Automate</div>
+                    <div class="sharepoint-title" id="flowTitle">Email Flow</div>
+                </div>
+                
+                <div class="flow-diagram">
+                    <div class="flow-title">Email Notification Flow</div>
+                    
+                    <div class="flow-vertical">
+                        <div class="flow-step-vertical flow-trigger">
+                            <div class="step-title">Trigger: Button clicked in Power App</div>
+                            <div class="step-description">When "Send Email" button is clicked in the app</div>
+                        </div>
+                        
+                        <div class="flow-step-vertical flow-action">
+                            <div class="step-title">Action: Get Employee Information</div>
+                            <div class="step-description">Retrieve employee details from SharePoint list</div>
+                        </div>
+                        
+                        <div class="flow-step-vertical flow-action">
+                            <div class="step-title">Action: Format Email Content</div>
+                            <div class="step-description">Create HTML email body with employee details</div>
+                        </div>
+                        
+                        <div class="flow-step-vertical flow-email">
+                            <div class="step-title">Action: Send Email</div>
+                            <div class="step-description">Send email using Office 365 Outlook connector</div>
+                        </div>
+                        
+                        <div class="flow-step-vertical flow-action">
+                            <div class="step-title">Action: Log Email Sent</div>
+                            <div class="step-description">Update SharePoint list to track email was sent</div>
+                        </div>
+                    </div>
+                    
+                    <div class="email-preview">
+                        <div class="email-header">
+                            <div><strong>From:</strong> Onboarding System &lt;onboarding@company.com&gt;</div>
+                            <div><strong>To:</strong> <span id="emailRecipient">John Manager</span> &lt;<span id="emailAddress">john.manager@company.com</span>&gt;</div>
+                            <div><strong>Subject:</strong> <span id="emailSubject">Employee Onboarding Task</span></div>
+                        </div>
+                        <div id="emailBody">
+                            <p>Hello <span id="recipientName">John</span>,</p>
+                            <p>This is a notification regarding the employee onboarding process.</p>
+                            <p>Employee: <span id="emailEmployeeName">Sarah Smith</span><br>
+                            WWID: <span id="emailEmployeeWWID">10045678</span><br>
+                            Start Date: <span id="emailStartDate">May 15, 2023</span></p>
+                            <p>Please complete the required steps in the Employee Onboarding App.</p>
+                            <p>Thank you,<br>Onboarding Team</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Employee Email Modal -->
+        <div id="employeeEmailModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeEmployeeEmailModal">&times;</span>
+                
+                <div class="sharepoint-header">
+                    <div class="sharepoint-logo" style="color: var(--intel-blue);">Email</div>
+                    <div class="sharepoint-title">Send Email to Team</div>
+                </div>
+                
+                <div class="email-form">
+                    <div class="input-row">
+                        <label for="emailTo">To:</label>
+                        <input type="text" id="emailTo" value="onboarding_team@company.com">
+                    </div>
+                    
+                    <div class="input-row">
+                        <label for="emailSubjectInput">Subject:</label>
+                        <input type="text" id="emailSubjectInput" value="Onboarding Question">
+                    </div>
+                    
+                    <div class="input-row">
+                        <label for="emailBodyInput">Message:</label>
+                        <textarea id="emailBodyInput">
+Hello Onboarding Team,
+
+I'm currently going through the onboarding process and have a question about my plan selection.
+
+[Your question here]
+
+Thank you,
+[Your Name]
+                        </textarea>
+                    </div>
+                    
+                    <button class="btn" id="sendEmailBtn" style="width: 100%;">
+                        <i>📧</i> Send Email
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Help Modal -->
+        <div id="helpModal" class="modal">
+            <div class="modal-content help-modal-content">
+                <span class="close-modal" id="closeHelpModal">&times;</span>
+                
+                <h2 class="help-title">Help - What to do next</h2>
+                
+                <div class="help-text" id="helpContent">
+                    <!-- Help content will be dynamically updated -->
+                </div>
+            </div>
+        </div>
     </div>
     
-    <!-- Notification -->
-    <div id="notification" class="notification">
-        Data synchronized with SharePoint successfully!
-    </div>
-
     <script>
-        // Demo Data
-const employees = [
-    { 
-        id: 1, 
-        name: "Alice Smith", 
-        email: "alice.smith@example.com", 
-        okrGoal: "Software", 
-        goalEvidence: "Delivered project ahead of schedule",
-        selfRating: "Exceeds",
-        managerRating: "Exceeds",
-        score: 115,
-        payPercentage: 115,
-        baseSalary: 2500,
-        payAmount: 2875,
-        lastModified: "2025-05-05T09:30:00"
-    },
-    { 
-        id: 2, 
-        name: "Bob Johnson", 
-        email: "bob.johnson@example.com", 
-        okrGoal: "Customer Focus", 
-        goalEvidence: "Resolved 95% of customer tickets within SLA",
-        selfRating: "Meets",
-        managerRating: "Meets",
-        score: 100,
-        payPercentage: 100,
-        baseSalary: 2200,
-        payAmount: 2200,
-        lastModified: "2025-05-06T14:15:00"
-    },
-    { 
-        id: 3, 
-        name: "Charlie Lee", 
-        email: "charlie.lee@example.com", 
-        okrGoal: "Innovation", 
-        goalEvidence: "Filed two patents this quarter",
-        selfRating: "Exceeds",
-        managerRating: "Exceeds",
-        score: 118,
-        payPercentage: 118,
-        baseSalary: 2350,
-        payAmount: 2773,
-        lastModified: "2025-05-04T11:45:00"
-    },
-    { 
-        id: 4, 
-        name: "Diana Rodriguez", 
-        email: "diana.rodriguez@example.com", 
-        okrGoal: "Leadership", 
-        goalEvidence: "Led cross-functional team to success",
-        selfRating: "Meets",
-        managerRating: "Meets",
-        score: 105,
-        payPercentage: 105,
-        baseSalary: 2450,
-        payAmount: 2572.50,
-        lastModified: "2025-05-07T08:20:00"
-    }
-];
-
-        const managers = [
-            {
-                id: 1,
-                name: "John Manager",
-                email: "john.manager@example.com",
-                employeeIds: [1, 2, 3, 4]
+        // Sample employee data
+        const employees = [
+            { 
+                id: 1, 
+                name: "Sarah Smith", 
+                wwid: "10045678", 
+                geo: "Americas", 
+                group: "Sales", 
+                team: "Enterprise", 
+                org: "DCG", 
+                managerName: "John Manager", 
+                managerWWID: "10012345", 
+                startDate: "2023-05-15", 
+                processStep: 0, 
+                export: true, 
+                status: "normal", 
+                lastModified: "2025-05-09T08:30:00",
+                managerEmailSent: false,
+                managerEmailDate: null,
+                lastReminderDate: null,
+                employeeEmailSent: false,
+                selectedPlan: null,
+                quotaAllocations: [],
+                plans: [
+                    { plan: "Enterprise Base Plan", quota: "100%", accounts: "Core Accounts" },
+                    { plan: "New Business Bonus", quota: "25%", accounts: "Emerging Markets" },
+                    { plan: "Strategic Accounts", quota: "15%", accounts: "Fortune 500 Clients" }
+                ]
+            },
+            { 
+                id: 2, 
+                name: "Michael Johnson", 
+                wwid: "10056789", 
+                geo: "EMEA", 
+                group: "Sales", 
+                team: "SMB", 
+                org: "CCG", 
+                managerName: "John Manager", 
+                managerWWID: "10012345", 
+                startDate: "2023-06-01", 
+                processStep: 1, 
+                export: true, 
+                status: "yellow", 
+                lastModified: "2025-05-08T15:45:00",
+                managerEmailSent: true,
+                managerEmailDate: "2025-05-08T10:30:00",
+                lastReminderDate: null,
+                employeeEmailSent: false,
+                selectedPlan: null,
+                quotaAllocations: [],
+                plans: [
+                    { plan: "SMB Base Plan", quota: "100%", accounts: "Regional Business Clients" },
+                    { plan: "Volume Incentive", quota: "20%", accounts: "Mid-Market" },
+                    { plan: "Cross-Selling Bonus", quota: "15%", accounts: "Existing Customers" }
+                ]
+            },
+            { 
+                id: 3, 
+                name: "Emily Davis", 
+                wwid: "10067890", 
+                geo: "APAC", 
+                group: "Sales", 
+                team: "Commercial", 
+                org: "IOTG", 
+                managerName: "John Manager", 
+                managerWWID: "10012345", 
+                startDate: "2023-06-15", 
+                processStep: 2, 
+                export: true, 
+                status: "yellow", 
+                lastModified: "2025-05-07T11:20:00",
+                managerEmailSent: true,
+                managerEmailDate: "2025-05-06T14:20:00",
+                lastReminderDate: "2025-05-07T09:15:00",
+                employeeEmailSent: true,
+                selectedPlan: null,
+                quotaAllocations: [],
+                plans: [
+                    { plan: "Commercial Base Plan", quota: "100%", accounts: "APAC Enterprise" },
+                    { plan: "IoT Solutions", quota: "30%", accounts: "Manufacturing Sector" },
+                    { plan: "Digital Transformation", quota: "20%", accounts: "Tech Industry" }
+                ]
             }
         ];
-
-        // OKR Goals options
-        const okrGoals = ["Software", "Customer Focus", "Innovation", "Leadership", "Collaboration"];
         
-        // Rating options
-        const ratingOptions = ["Does Not Meet", "Meets", "Exceeds"];
+        // Plan definitions
+        const planDefinitions = {
+            "100": {
+                name: "Software Sales Plan",
+                breakdown: "50% CCG, 50% BRG",
+                quotas: [
+                    { name: "CCG", target: 50, type: "main" },
+                    { name: "BRG A", target: 25, type: "brgSub" },
+                    { name: "BRG B", target: 25, type: "brgSub" }
+                ]
+            },
+            "200": {
+                name: "Hardware Sales Plan",
+                breakdown: "70% DCG, 30% IoT",
+                quotas: [
+                    { name: "DCG", target: 70, type: "main" },
+                    { name: "IoT", target: 30, type: "main" }
+                ]
+            },
+            "300": {
+                name: "Enterprise Solutions Plan",
+                breakdown: "40% KAM, 40% OKR, 20% SMB",
+                quotas: [
+                    { name: "KAM", target: 40, type: "main" },
+                    { name: "OKR", target: 40, type: "main" },
+                    { name: "SMB", target: 20, type: "main" }
+                ]
+            },
+            "400": {
+                name: "Strategic Accounts Plan",
+                breakdown: "50% CCG, 25% OKR, 25% BRG",
+                quotas: [
+                    { name: "CCG", target: 50, type: "main" },
+                    { name: "OKR", target: 25, type: "main" },
+                    { name: "BRG A", target: 12.5, type: "brgSub" },
+                    { name: "BRG B", target: 12.5, type: "brgSub" }
+                ]
+            }
+        };
         
-        // Current user
-        let currentUser = null;
-        let isAdmin = true;
-        let notificationShown = false;
+        let newEmployees = [
+            { 
+                id: 4, 
+                name: "Robert Wilson", 
+                wwid: "10078901", 
+                geo: "Americas", 
+                group: "Sales", 
+                team: "Public Sector", 
+                org: "NSG", 
+                managerName: "John Manager", 
+                managerWWID: "10012345", 
+                startDate: "2023-07-01", 
+                processStep: 0, 
+                export: true, 
+                status: "normal", 
+                lastModified: "2025-05-06T09:15:00",
+                managerEmailSent: false,
+                managerEmailDate: null,
+                lastReminderDate: null,
+                employeeEmailSent: false,
+                selectedPlan: null,
+                quotaAllocations: [],
+                plans: [
+                    { plan: "Public Sector Base", quota: "100%", accounts: "Government Clients" },
+                    { plan: "Federal Contracts", quota: "25%", accounts: "US Federal" },
+                    { plan: "State & Local", quota: "20%", accounts: "State Governments" }
+                ]
+            },
+            { 
+                id: 5, 
+                name: "Jessica Brown", 
+                wwid: "10089012", 
+                geo: "Americas", 
+                group: "Sales", 
+                team: "Enterprise", 
+                org: "DCG", 
+                managerName: "John Manager", 
+                managerWWID: "10012345", 
+                startDate: "2023-07-15", 
+                processStep: 0, 
+                export: true, 
+                status: "normal", 
+                lastModified: "2025-05-09T10:30:00",
+                managerEmailSent: false,
+                managerEmailDate: null,
+                lastReminderDate: null,
+                employeeEmailSent: false,
+                selectedPlan: null,
+                quotaAllocations: [],
+                plans: [
+                    { plan: "Enterprise Base", quota: "100%", accounts: "Financial Services" },
+                    { plan: "Data Center Growth", quota: "20%", accounts: "Banking Sector" },
+                    { plan: "Cloud Integration", quota: "15%", accounts: "Insurance Industry" }
+                ]
+            },
+            { 
+                id: 6, 
+                name: "David Miller", 
+                wwid: "10090123", 
+                geo: "EMEA", 
+                group: "Sales", 
+                team: "SMB", 
+                org: "CCG", 
+                managerName: "John Manager", 
+                managerWWID: "10012345", 
+                startDate: "2023-08-01", 
+                processStep: 0, 
+                export: true, 
+                status: "normal", 
+                lastModified: "2025-05-09T10:35:00",
+                managerEmailSent: false,
+                managerEmailDate: null,
+                lastReminderDate: null,
+                employeeEmailSent: false,
+                selectedPlan: null,
+                quotaAllocations: [],
+                plans: [
+                    { plan: "European SMB", quota: "100%", accounts: "EU Business Market" },
+                    { plan: "UK Market", quota: "25%", accounts: "United Kingdom" },
+                    { plan: "DACH Growth", quota: "20%", accounts: "Germany & Austria" }
+                ]
+            }
+        ];
         
-        // DOM Elements
-        const startScreen = document.getElementById('start-screen');
-        const mainApp = document.getElementById('main-app');
-        const managerScreen = document.getElementById('manager-screen');
-        const employeeScreen = document.getElementById('employee-screen');
-        const tabs = document.querySelectorAll('.tab');
-        const greeting = document.getElementById('greeting');
-        const userInfo = document.getElementById('user-info');
-        const startBtn = document.getElementById('start-btn');
-        const emailInput = document.getElementById('email-input');
-        const adminCheckbox = document.getElementById('admin-checkbox');
-        const tabsContainer = document.getElementById('tabs');
-        const sharepointBtn = document.getElementById('sharepoint-btn');
-        const flowBtn = document.getElementById('flow-btn');
-        const sharepointModal = document.getElementById('sharepoint-modal');
-        const flowModal = document.getElementById('flow-modal');
-        const closeModalButtons = document.querySelectorAll('.close-modal');
-        const notification = document.getElementById('notification');
-        const budgetInfoDiv = document.getElementById('budget-info');
+        // Process step labels
+        const processStepLabels = ["Not Started", "Plan Acknowledged", "Added to QST", "Added to CRC", "Info in Varicent", "Completed"];
         
-        // Budget calculations
-        const budgetTotal = document.getElementById('budget-total');
-        const budgetRemaining = document.getElementById('budget-remaining');
+        // Current selected employee ID
+        let selectedEmployeeId = null;
+        let managerEmailsSent = 0;
+        let selectedWorkflowEmployeeId = null;
+        let currentAppView = 'manager';
         
-        // Format currency
-        function formatCurrency(amount) {
-            return '$' + amount.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+        // DOM Elements - Manager View
+        const appHeader = document.getElementById('appHeader');
+        const managerHeader = document.getElementById('managerHeader');
+        const employeeHeader = document.getElementById('employeeHeader');
+        const startScreen = document.getElementById('startScreen');
+        const managerApp = document.getElementById('managerApp');
+        const employeeApp = document.getElementById('employeeApp');
+        const startBtn = document.getElementById('startBtn');
+        const employeeList = document.getElementById('employeeList');
+        const statusLight = document.getElementById('statusLight');
+        const searchBox = document.getElementById('searchBox');
+        const exportBtn = document.getElementById('exportBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const refreshBtn2 = document.getElementById('refreshBtn2');
+        const importBtn = document.getElementById('importBtn');
+        const managerEmailBtn = document.getElementById('managerEmailBtn');
+        const employeeEmailBtn = document.getElementById('employeeEmailBtn');
+        const reminderBtn = document.getElementById('reminderBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitNote = document.getElementById('submitNote');
+        const preSubmitNote = document.getElementById('preSubmitNote');
+        const emailCount = document.getElementById('emailCount');
+        const lastEmailDate = document.getElementById('lastEmailDate');
+        const planList = document.getElementById('planList');
+        
+        // DOM Elements - Employee View
+        const empWorkflowList = document.getElementById('empWorkflowList');
+        const managerTab = document.getElementById('managerTab');
+        const employeeTab = document.getElementById('employeeTab');
+        const managerTabEmp = document.getElementById('managerTabEmp');
+        const employeeTabEmp = document.getElementById('employeeTabEmp');
+        const empEmailBtn = document.getElementById('empEmailBtn');
+        const helpBtn = document.getElementById('helpBtn');
+        const step1Bar = document.getElementById('step1Bar');
+        const step2Bar = document.getElementById('step2Bar');
+        const step3Bar = document.getElementById('step3Bar');
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const empSharepointData = document.getElementById('empSharepointData');
+        
+        // Input fields for employee info
+        const empWWIDInput = document.getElementById('empWWID');
+        const empNameInput = document.getElementById('empName');
+        const empGeoInput = document.getElementById('empGeo');
+        const empTeamInput = document.getElementById('empTeam');
+        
+        // Checkbox elements for process tracking
+        const skipAllCheckbox = document.getElementById('skipAll');
+        const planAcknowledgedCheckbox = document.getElementById('planAcknowledged');
+        const addedToQSTCheckbox = document.getElementById('addedToQST');
+        const addedToCRCCheckbox = document.getElementById('addedToCRC');
+        const filledVaricentCheckbox = document.getElementById('filledVaricent');
+        const exportedCheckbox = document.getElementById('exported');
+        
+        // Modal elements
+        const exportModal = document.getElementById('exportModal');
+        const sharepointModal = document.getElementById('sharepointModal');
+        const flowModal = document.getElementById('flowModal');
+        const helpModal = document.getElementById('helpModal');
+        const employeeEmailModal = document.getElementById('employeeEmailModal');
+        const employeeSharepointModal = document.getElementById('employeeSharepointModal');
+        const closeExportModal = document.getElementById('closeExportModal');
+        const closeSharepointModal = document.getElementById('closeSharepointModal');
+        const closeEmployeeSharepointModal = document.getElementById('closeEmployeeSharepointModal');
+        const closeFlowModal = document.getElementById('closeFlowModal');
+        const closeHelpModal = document.getElementById('closeHelpModal');
+        const closeEmployeeEmailModal = document.getElementById('closeEmployeeEmailModal');
+        const helpContent = document.getElementById('helpContent');
+        const sendEmailBtn = document.getElementById('sendEmailBtn');
+        
+        // Email elements
+        const emailEmployeeName = document.getElementById('emailEmployeeName');
+        const emailEmployeeWWID = document.getElementById('emailEmployeeWWID');
+        const emailStartDate = document.getElementById('emailStartDate');
+        const emailRecipient = document.getElementById('emailRecipient');
+        const emailAddress = document.getElementById('emailAddress');
+        const emailSubject = document.getElementById('emailSubject');
+        const recipientName = document.getElementById('recipientName');
+        const emailBody = document.getElementById('emailBody');
+        
+        // Initialize the app when the page loads
+        window.onload = function() {
+            // Hide the header initially
+            appHeader.style.display = 'none';
+            
+            // Initialize the completion flags for all employees
+            employees.forEach(emp => {
+                emp.completedManagerWorkflow = false;
+                emp.completedEmployeeWorkflow = false;
+                emp.planInfoPopulated = emp.plans && emp.plans.length > 0;
             });
+
+            newEmployees.forEach(emp => {
+                emp.completedManagerWorkflow = false;
+                emp.completedEmployeeWorkflow = false;
+                emp.planInfoPopulated = emp.plans && emp.plans.length > 0;
+            });
+            
+            // Add event listeners
+            startBtn.addEventListener('click', startApp);
+            exportBtn.addEventListener('click', showExportModal);
+            refreshBtn.addEventListener('click', refreshData);
+            refreshBtn2.addEventListener('click', refreshData);
+            importBtn.addEventListener('click', importEmployee);
+            managerEmailBtn.addEventListener('click', function() { sendManagerEmail(); });
+            employeeEmailBtn.addEventListener('click', function() { sendEmployeeEmail(); });
+            reminderBtn.addEventListener('click', function() { sendReminderEmail(); });
+            submitBtn.addEventListener('click', submitEmployee);
+            
+            // Modal close buttons
+            closeExportModal.addEventListener('click', function() { exportModal.style.display = 'none'; });
+            closeSharepointModal.addEventListener('click', function() { sharepointModal.style.display = 'none'; });
+            closeEmployeeSharepointModal.addEventListener('click', function() { employeeSharepointModal.style.display = 'none'; });
+            closeFlowModal.addEventListener('click', function() { flowModal.style.display = 'none'; });
+            closeHelpModal.addEventListener('click', function() { helpModal.style.display = 'none'; });
+            closeEmployeeEmailModal.addEventListener('click', function() { employeeEmailModal.style.display = 'none'; });
+            
+            // Search and filter
+            skipAllCheckbox.addEventListener('change', updateSectionStatus);
+            searchBox.addEventListener('input', searchEmployees);
+            
+            // Add event listeners for process tracking checkboxes
+            planAcknowledgedCheckbox.addEventListener('change', updateEmployeeStatus);
+            addedToQSTCheckbox.addEventListener('change', updateEmployeeStatus);
+            addedToCRCCheckbox.addEventListener('change', updateEmployeeStatus);
+            filledVaricentCheckbox.addEventListener('change', updateEmployeeStatus);
+            exportedCheckbox.addEventListener('change', updateEmployeeStatus);
+            
+            // Add event listeners for editable fields
+            empWWIDInput.addEventListener('change', updateEmployeeInfo);
+            empNameInput.addEventListener('change', updateEmployeeInfo);
+            empGeoInput.addEventListener('change', updateEmployeeInfo);
+            empTeamInput.addEventListener('change', updateEmployeeInfo);
+            
+            // Employee workflow listeners
+            managerTab.addEventListener('click', switchToManagerView);
+            employeeTab.addEventListener('click', switchToEmployeeView);
+            managerTabEmp.addEventListener('click', switchToManagerView);
+            employeeTabEmp.addEventListener('click', switchToEmployeeView);
+            empEmailBtn.addEventListener('click', showEmployeeEmailModal);
+            helpBtn.addEventListener('click', showHelpModal);
+            sendEmailBtn.addEventListener('click', handleSendEmail);
+            
+            // Initialize the employee list
+            renderEmployeeList();
+            renderEmployeeWorkflowList();
+            
+            // Initialize empty plan table
+            renderEmptyPlanTable();
+            
+            // Initialize SharePoint data in employee view
+            renderEmployeeSharepointData();
+        };
+        
+        // Start the app
+        function startApp() {
+            startScreen.classList.remove('visible');
+            startScreen.classList.add('hidden');
+            managerApp.classList.remove('hidden');
+            managerApp.classList.add('visible');
+            appHeader.style.display = 'flex';
+            
+            // Count existing manager emails
+            employees.forEach(emp => {
+                if (emp.managerEmailSent) {
+                    managerEmailsSent++;
+                }
+                
+                // Initialize the completion flags
+                emp.completedManagerWorkflow = false;
+                emp.completedEmployeeWorkflow = false;
+                emp.planInfoPopulated = emp.plans && emp.plans.length > 0;
+            });
+
+            newEmployees.forEach(emp => {
+                emp.completedManagerWorkflow = false;
+                emp.completedEmployeeWorkflow = false;
+                emp.planInfoPopulated = emp.plans && emp.plans.length > 0;
+            });
+            
+            emailCount.textContent = managerEmailsSent;
+        }
+        
+        // Switch to manager view
+function switchToManagerView() {
+    currentAppView = 'manager';
+    
+    // Update active tab in both views
+    managerTab.classList.add('active');
+    employeeTab.classList.remove('active');
+    managerTabEmp.classList.add('active');
+    employeeTabEmp.classList.remove('active');
+    
+    // Show manager app, hide employee app
+    managerApp.style.display = 'block';
+    employeeApp.style.display = 'none';
+    
+    // Update header
+    managerHeader.style.display = 'flex';
+    employeeHeader.style.display = 'none';
+}
+
+// Switch to employee view
+function switchToEmployeeView() {
+    currentAppView = 'employee';
+    
+    // Update active tab in both views
+    managerTab.classList.remove('active');
+    employeeTab.classList.add('active');
+    managerTabEmp.classList.remove('active');
+    employeeTabEmp.classList.add('active');
+    
+    // Show employee app, hide manager app
+    managerApp.style.display = 'none';
+    employeeApp.style.display = 'block';
+    
+    // Update header
+    managerHeader.style.display = 'none';
+    employeeHeader.style.display = 'flex';
+    
+    // Reset workflow if needed
+    renderEmployeeWorkflowList();
+    
+    // Update SharePoint data display
+    renderEmployeeSharepointData();
+}
+        
+        // Render employee SharePoint data for reference
+        function renderEmployeeSharepointData() {
+            empSharepointData.innerHTML = '';
+            
+            // Sort by process step
+            const sortedEmployees = [...employees].sort((a, b) => b.processStep - a.processStep);
+            
+            sortedEmployees.forEach(employee => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${employee.name}</td>
+                    <td>${employee.wwid}</td>
+                    <td>${employee.team}</td>
+                    <td>${formatShortDate(employee.startDate)}</td>
+                    <td>${processStepLabels[employee.processStep]}</td>
+                `;
+                
+                empSharepointData.appendChild(row);
+            });
+        }
+        
+        function renderEmployeeList() {
+    employeeList.innerHTML = '';
+    
+    // Filter to only show employees that haven't completed manager workflow
+    const managerViewEmployees = employees.filter(emp => !emp.completedManagerWorkflow);
+    
+    managerViewEmployees.forEach(employee => {
+        const row = document.createElement('tr');
+        row.className = employee.status;
+        
+        // Add selected class if this is the selected employee
+        if (selectedEmployeeId && employee.id === selectedEmployeeId) {
+            row.classList.add('selected');
+        }
+        
+        row.onclick = () => selectEmployee(employee.id);
+        row.setAttribute('data-employee-id', employee.id);
+        
+        // Get first name for shorter display
+        const firstName = employee.name.split(' ')[0];
+        
+        row.innerHTML = `
+            <td>${firstName}</td>
+            <td>${employee.wwid}</td>
+            <td>${employee.geo}</td>
+            <td>${employee.group}</td>
+            <td>${employee.team}</td>
+            <td>${employee.org}</td>
+            <td>John</td>
+            <td>${formatShortDate(employee.startDate)}</td>
+            <td>${employee.processStep}/5</td>
+            <td>${employee.managerEmailSent ? '✓' : '✗'}</td>
+            <td>${employee.lastReminderDate ? '✓' : '✗'}</td>
+            <td>${employee.employeeEmailSent ? '✓' : '✗'}</td>
+            <td><input type="checkbox" ${employee.export ? 'checked' : ''} onclick="event.stopPropagation(); toggleExport(${employee.id})"></td>
+        `;
+        
+        employeeList.appendChild(row);
+    });
+}
+
+// Render the employee list for workflow view
+function renderEmployeeWorkflowList() {
+    empWorkflowList.innerHTML = '';
+    
+    // Filter to only show employees that haven't completed employee workflow
+    const employeeViewEmployees = employees.filter(emp => !emp.completedEmployeeWorkflow);
+    
+    employeeViewEmployees.forEach(employee => {
+        const li = document.createElement('li');
+        li.textContent = employee.name;
+        li.setAttribute('data-employee-id', employee.id);
+        
+        // Add selected class if this is the selected workflow employee
+        if (selectedWorkflowEmployeeId && employee.id === selectedWorkflowEmployeeId) {
+            li.classList.add('selected');
+        }
+        
+        li.addEventListener('click', () => selectWorkflowEmployee(employee.id));
+        empWorkflowList.appendChild(li);
+    });
+    
+    // Reset workflow state
+    resetWorkflow();
+}
+        
+        // Reset the workflow state
+        function resetWorkflow() {
+            selectedWorkflowEmployeeId = null;
+            
+            // Reset step bars
+            step1Bar.classList.add('active');
+            step1Bar.classList.remove('completed');
+            step2Bar.classList.add('disabled');
+            step2Bar.classList.remove('active', 'completed');
+            step3Bar.classList.add('disabled');
+            step3Bar.classList.remove('active', 'completed');
+            
+            // Reset steps to empty state
+            step1.classList.remove('empty');
+            step2.classList.add('empty');
+            step2.innerHTML = '';
+            step3.classList.add('empty');
+            step3.innerHTML = '';
+        }
+        
+        // Select an employee for the workflow
+        function selectWorkflowEmployee(id) {
+            // Deselect previous selected employee
+            if (selectedWorkflowEmployeeId) {
+                const prevItems = empWorkflowList.querySelectorAll('li.selected');
+                prevItems.forEach(item => {
+                    item.classList.remove('selected');
+                });
+            }
+            
+            selectedWorkflowEmployeeId = id;
+            
+            // Highlight the selected employee
+            const selectedItem = empWorkflowList.querySelector(`li[data-employee-id="${id}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('selected');
+            }
+            
+            // Get the selected employee
+            const employee = employees.find(emp => emp.id === id);
+            
+            // Update step 1 status
+            step1Bar.classList.remove('active');
+            step1Bar.classList.add('completed');
+            step2Bar.classList.remove('disabled');
+            step2Bar.classList.add('active');
+            
+            // Create and display Step 2 content
+            step2.classList.remove('empty');
+            step2.innerHTML = `
+    <h3>Validate Information</h3>
+    <div class="employee-info">
+    </div>
+    <div class="input-group">
+        <div class="input-row" style="gap: 5px; align-items: center;">
+            <label for="empWfWWID" style="min-width: 40px;">WWID:</label>
+            <input type="text" id="empWfWWID" value="${employee.wwid}" style="flex: 1;">
+        </div>
+        <div class="input-row" style="gap: 5px; align-items: center;">
+            <label for="empWfName" style="min-width: 40px;">Name:</label>
+            <input type="text" id="empWfName" value="${employee.name}" style="flex: 1;">
+        </div>
+        <div class="input-row" style="gap: 5px; align-items: center;">
+            <label for="empWfTeam" style="min-width: 40px;">Team:</label>
+            <input type="text" id="empWfTeam" value="${employee.team}" style="flex: 1;">
+        </div>
+    </div>
+    
+    <h3>Select Plan</h3>
+    <div class="plan-selection">
+        <label for="planSelect" style="margin-bottom: 2px; display: block;"><strong>Plan Name:</strong></label>
+        <select id="planSelect" onchange="handlePlanSelection()">
+            <option value="">Select a Plan</option>
+            <option value="100">Plan 100</option>
+            <option value="200">Plan 200</option>
+            <option value="300">Plan 300</option>
+            <option value="400">Plan 400</option>
+        </select>
+        
+        <div class="plan-details" id="planDetails">
+            <p style="font-size: 14px;"><strong>Plan Name:</strong> <span id="planName">Please select a plan</span></p>
+            <p style="font-size: 14px;"><strong>Plan Breakdown:</strong> <span id="planBreakdown">-</span></p>
+        </div>
+    </div>
+`;
+            
+            // Get references to the new elements
+            const planSelect = document.getElementById('planSelect');
+            const planName = document.getElementById('planName');
+            const planBreakdown = document.getElementById('planBreakdown');
+            
+            // If employee already has a plan selected, show it
+            if (employee.selectedPlan) {
+                planSelect.value = employee.selectedPlan;
+                const plan = planDefinitions[employee.selectedPlan];
+                planName.textContent = plan.name;
+                planBreakdown.textContent = plan.breakdown;
+                
+                // Automatically advance to step 3
+                advanceToStep3();
+            }
+        }
+        
+        // Handle plan selection
+        function handlePlanSelection() {
+            const planSelect = document.getElementById('planSelect');
+            const planName = document.getElementById('planName');
+            const planBreakdown = document.getElementById('planBreakdown');
+            
+            const planId = planSelect.value;
+            
+            if (!planId) {
+                planName.textContent = 'Please select a plan';
+                planBreakdown.textContent = '-';
+                return;
+            }
+            
+            const plan = planDefinitions[planId];
+            planName.textContent = plan.name;
+            planBreakdown.textContent = plan.breakdown;
+            
+            // Save the selected plan to the employee data
+            if (selectedWorkflowEmployeeId) {
+                const employee = employees.find(emp => emp.id === selectedWorkflowEmployeeId);
+                if (employee) {
+                    employee.selectedPlan = planId;
+                    employee.quotaAllocations = [];  // Reset any previous allocations
+                }
+            }
+            
+            // Automatically advance to step 3
+            advanceToStep3();
+        }
+        
+        // Advance to step 3
+        function advanceToStep3() {
+            // Update step 2 status
+            step2Bar.classList.remove('active');
+            step2Bar.classList.add('completed');
+            step3Bar.classList.remove('disabled');
+            step3Bar.classList.add('active');
+            
+            // Get the selected employee and plan
+            const employee = employees.find(emp => emp.id === selectedWorkflowEmployeeId);
+            const planId = employee.selectedPlan;
+            const plan = planDefinitions[planId];
+            
+            // Create Step 3 content
+            step3.classList.remove('empty');
+            step3.innerHTML = `
+                <div class="quota-allocation-title">
+                    <h3>Assign Your Quota</h3>
+                    <div class="total-percentage" id="totalPercentage">0%</div>
+                </div>
+                
+                <table class="quota-table">
+                    <thead>
+                        <tr>
+                            <th>Quota Name</th>
+                            <th>Percentage</th>
+                            <th>Accounts & Quotas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quotaAllocationContainer">
+                        <!-- Quota rows will be generated here -->
+                    </tbody>
+                </table>
+                
+                <button class="submit-btn" id="empSubmitBtn" disabled>Submit</button>
+                
+                <div class="note" id="empSubmitNote">
+                    <strong>NOTE:</strong> By submitting, you confirm that all information is correct. Your quota selections will be reflected in your quota report.
+                </div>
+            `;
+            
+            // Get reference to new elements
+            const quotaAllocationContainer = document.getElementById('quotaAllocationContainer');
+            const totalPercentage = document.getElementById('totalPercentage');
+            const empSubmitBtn = document.getElementById('empSubmitBtn');
+            
+            // Add event listener to the submit button
+            empSubmitBtn.addEventListener('click', submitEmployeeWorkflow);
+            
+            // Generate the quota allocation UI
+            generateQuotaAllocationUI(plan.quotas, employee.quotaAllocations, quotaAllocationContainer, totalPercentage, empSubmitBtn);
+        }
+        
+        // Generate quota allocation UI - Restructured to be table-based
+        function generateQuotaAllocationUI(quotas, existingAllocations, container, totalEl, submitBtn) {
+            container.innerHTML = '';
+            
+            // Group quotas by type
+            const groupedQuotas = {};
+            quotas.forEach(quota => {
+                if (!groupedQuotas[quota.type]) {
+                    groupedQuotas[quota.type] = [];
+                }
+                groupedQuotas[quota.type].push(quota);
+            });
+            
+            // Create rows for each quota
+            quotas.forEach(quota => {
+                const row = document.createElement('tr');
+                
+                // Quota Name Cell with Target
+                const nameCell = document.createElement('td');
+                nameCell.className = 'quota-name';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = quota.name;
+                
+                const targetSpan = document.createElement('span');
+                targetSpan.className = 'quota-target';
+                targetSpan.textContent = `${quota.target}%`;
+                targetSpan.id = `target-${quota.name.replace(/\s+/g, '')}`;
+                
+                if (isQuotaTargetMet(quota.name, quota.target, existingAllocations)) {
+                    targetSpan.classList.add('met');
+                }
+                
+                nameCell.appendChild(nameSpan);
+                nameCell.appendChild(targetSpan);
+                
+                // Percentage Cell
+                const percentageCell = document.createElement('td');
+                percentageCell.className = 'quota-percentage';
+                
+                const select = document.createElement('select');
+                select.id = `quota-${quota.name.replace(/\s+/g, '')}`;
+                select.className = 'quota-dropdown';
+                if (!isQuotaTargetMet(quota.name, quota.target, existingAllocations)) {
+                    select.classList.add('error');
+                }
+                
+                // Add options (0% to 100% in 5% increments)
+                for (let i = 0; i <= 100; i += 5) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `${i}%`;
+                    
+                    // Select the existing value if it exists
+                    const existingAllocation = existingAllocations.find(a => a.name === quota.name);
+                    if (existingAllocation && existingAllocation.percentage === i) {
+                        option.selected = true;
+                    }
+                    
+                    select.appendChild(option);
+                }
+                
+                // Add event listener to update total percentage
+                select.addEventListener('change', function() {
+                    updateQuotaAllocation(quota.name, parseFloat(this.value), quota.target, quota.type, totalEl, submitBtn);
+                });
+                
+                percentageCell.appendChild(select);
+                
+                // Accounts Cell
+                const accountsCell = document.createElement('td');
+                accountsCell.className = 'quota-accounts';
+                
+                const accountInput = document.createElement('input');
+                accountInput.type = 'text';
+                accountInput.id = `accounts-${quota.name.replace(/\s+/g, '')}`;
+                accountInput.placeholder = 'Enter accounts and quotas...';
+                if (!hasAccountsText(quota.name, existingAllocations)) {
+                    accountInput.classList.add('error');
+                }
+                
+                // Fill in existing accounts text
+                const existingAllocation = existingAllocations.find(a => a.name === quota.name);
+                if (existingAllocation && existingAllocation.accounts) {
+                    accountInput.value = existingAllocation.accounts;
+                }
+                
+                // Add event listener to validate accounts
+                accountInput.addEventListener('input', function() {
+                    updateQuotaAccountsText(quota.name, this.value, submitBtn);
+                });
+                
+                accountsCell.appendChild(accountInput);
+                
+                // Add cells to row
+                row.appendChild(nameCell);
+                row.appendChild(percentageCell);
+                row.appendChild(accountsCell);
+                
+                // Add row to table
+                container.appendChild(row);
+            });
+            
+            // Call update once to set initial values
+            updateTotalPercentage(totalEl, submitBtn);
+        }
+        
+        // Check if quota target is met
+        function isQuotaTargetMet(quotaName, target, allocations) {
+            // For main quotas, check direct match
+            const allocation = allocations.find(a => a.name === quotaName);
+            
+            if (allocation) {
+                return allocation.percentage === target;
+            }
+            
+            return false;
+        }
+        
+        // Check if accounts text exists
+        function hasAccountsText(quotaName, allocations) {
+            const allocation = allocations.find(a => a.name === quotaName);
+            
+            if (allocation) {
+                return allocation.accounts && allocation.accounts.trim() !== '';
+            }
+            
+            return false;
+        }
+        
+        // Update quota allocation
+        function updateQuotaAllocation(quotaName, percentage, target, type, totalEl, submitBtn) {
+            if (!selectedWorkflowEmployeeId) return;
+            
+            const employee = employees.find(emp => emp.id === selectedWorkflowEmployeeId);
+            if (!employee) return;
+            
+            // Find existing allocation or create new one
+            let allocation = employee.quotaAllocations.find(a => a.name === quotaName);
+            
+            if (!allocation) {
+                allocation = { name: quotaName, percentage: percentage, target: target, type: type, accounts: '' };
+                employee.quotaAllocations.push(allocation);
+            } else {
+                allocation.percentage = percentage;
+            }
+            
+            // Update UI for target status
+            const targetElement = document.getElementById(`target-${quotaName.replace(/\s+/g, '')}`);
+            const selectElement = document.getElementById(`quota-${quotaName.replace(/\s+/g, '')}`);
+            
+            if (percentage === target) {
+                targetElement.classList.add('met');
+                selectElement.classList.remove('error');
+            } else {
+                targetElement.classList.remove('met');
+                selectElement.classList.add('error');
+            }
+            
+            // Update total percentage
+            updateTotalPercentage(totalEl, submitBtn);
+        }
+        
+        // Update quota accounts text
+        function updateQuotaAccountsText(quotaName, text, submitBtn) {
+            if (!selectedWorkflowEmployeeId) return;
+            
+            const employee = employees.find(emp => emp.id === selectedWorkflowEmployeeId);
+            if (!employee) return;
+            
+            // Find existing allocation or create new one
+            let allocation = employee.quotaAllocations.find(a => a.name === quotaName);
+            
+            if (!allocation) {
+                // Get the quota definition to get the target and type
+                const planId = employee.selectedPlan;
+                const plan = planDefinitions[planId];
+                const quota = plan.quotas.find(q => q.name === quotaName);
+                
+                allocation = { 
+                    name: quotaName, 
+                    percentage: 0, 
+                    target: quota ? quota.target : 0, 
+                    type: quota ? quota.type : 'main', 
+                    accounts: text 
+                };
+                employee.quotaAllocations.push(allocation);
+            } else {
+                allocation.accounts = text;
+            }
+            
+            // Update UI for accounts status
+            const accountsElement = document.getElementById(`accounts-${quotaName.replace(/\s+/g, '')}`);
+            
+            if (text && text.trim() !== '') {
+                accountsElement.classList.remove('error');
+            } else {
+                accountsElement.classList.add('error');
+            }
+            
+            // Check if we can enable the submit button
+            checkFormCompletion(submitBtn);
+        }
+        
+        // Update total percentage
+        function updateTotalPercentage(totalEl, submitBtn) {
+            if (!selectedWorkflowEmployeeId) return;
+            
+            const employee = employees.find(emp => emp.id === selectedWorkflowEmployeeId);
+            if (!employee || !employee.quotaAllocations) return;
+            
+            // Calculate total percentage
+            let total = 0;
+            for (const allocation of employee.quotaAllocations) {
+                total += allocation.percentage;
+            }
+            
+            // Update UI
+            totalEl.textContent = `${total}%`;
+            
+            if (total === 100) {
+                totalEl.classList.add('complete');
+            } else {
+                totalEl.classList.remove('complete');
+            }
+            
+            // Check if we can enable the submit button
+            checkFormCompletion(submitBtn);
+        }
+        
+        // Check if quota form is complete and valid
+function checkFormCompletion(submitBtn) {
+    if (!selectedWorkflowEmployeeId) {
+        submitBtn.disabled = true;
+        // Reset Step 3 bar color
+        step3Bar.classList.remove('completed');
+        return;
+    }
+    
+    const employee = employees.find(emp => emp.id === selectedWorkflowEmployeeId);
+    if (!employee || !employee.quotaAllocations) {
+        submitBtn.disabled = true;
+        // Reset Step 3 bar color
+        step3Bar.classList.remove('completed');
+        return;
+    }
+    
+    // Check if all allocations have accounts and meet targets
+    let isValid = true;
+    let total = 0;
+    
+    // Group allocations by type
+    const groupedAllocations = {};
+    employee.quotaAllocations.forEach(allocation => {
+        if (!groupedAllocations[allocation.type]) {
+            groupedAllocations[allocation.type] = [];
+        }
+        groupedAllocations[allocation.type].push(allocation);
+        
+        total += allocation.percentage;
+        
+        // Check if accounts are filled
+        if (!allocation.accounts || allocation.accounts.trim() === '') {
+            isValid = false;
+        }
+    });
+    
+    // Check if total is 100%
+    if (total !== 100) {
+        isValid = false;
+    }
+    
+    // Check if each group meets its target
+    for (const type in groupedAllocations) {
+        const allocations = groupedAllocations[type];
+        const totalByType = allocations.reduce((sum, a) => sum + a.percentage, 0);
+        
+        // For main type, we need to check individual targets
+        if (type === 'main') {
+            for (const allocation of allocations) {
+                if (allocation.percentage !== allocation.target) {
+                    isValid = false;
+                    break;
+                }
+            }
+        } 
+        // For grouped types (like brgSub), we need to check the total matches the group target
+        else {
+            // Find the first allocation to get the type's target (they should all have the same overall target)
+            const typeTotalTarget = allocations[0].target * allocations.length;
+            if (totalByType !== typeTotalTarget) {
+                isValid = false;
+            }
+        }
+    }
+    
+    // Enable/disable submit button
+    submitBtn.disabled = !isValid;
+    
+    // Update Step 3 bar style based on validation
+    if (isValid) {
+        step3Bar.classList.add('completed');
+        step3Bar.classList.remove('active');
+    } else {
+        step3Bar.classList.remove('completed');
+        step3Bar.classList.add('active');
+    }
+    
+    return isValid;
+}
+        
+        // Submit employee workflow
+function submitEmployeeWorkflow() {
+    if (!selectedWorkflowEmployeeId) return;
+    
+    const employee = employees.find(emp => emp.id === selectedWorkflowEmployeeId);
+    if (!employee) return;
+    
+    // Create plan entries from quota allocations
+    if (employee.quotaAllocations) {
+        employee.plans = [];
+        
+        // Group allocations by type
+        const groupedAllocations = {};
+        employee.quotaAllocations.forEach(allocation => {
+            if (!groupedAllocations[allocation.type]) {
+                groupedAllocations[allocation.type] = [];
+            }
+            groupedAllocations[allocation.type].push(allocation);
+        });
+        
+        // Create plan entries
+        for (const allocation of employee.quotaAllocations) {
+            employee.plans.push({
+                plan: `${allocation.name} ${planDefinitions[employee.selectedPlan].name}`,
+                quota: `${allocation.percentage}%`,
+                accounts: allocation.accounts
+            });
+        }
+        
+        // Update process step
+        employee.processStep = 1;
+        employee.status = 'yellow';
+        
+        // Mark employee plan as acknowledged in manager view
+        if (selectedEmployeeId && selectedEmployeeId === employee.id) {
+            planAcknowledgedCheckbox.checked = true;
+            updateEmployeeStatus();
+        }
+    }
+    
+    // Instead of removing the employee, just update their status
+    const employeeIndex = employees.findIndex(emp => emp.id === selectedWorkflowEmployeeId);
+    if (employeeIndex !== -1) {
+        // Mark as completed in employee view but keep in system
+        employees[employeeIndex].completedEmployeeWorkflow = true;
+    }
+    
+    // Update step 3 status
+    step3Bar.classList.remove('active');
+    step3Bar.classList.add('completed');
+    
+    // Reset workflow and redraw list
+    renderEmployeeWorkflowList();
+    
+    // Update SharePoint data display
+    renderEmployeeSharepointData();
+    
+    // Show success message to user
+    alert(`Your information has been submitted successfully.`);
+}
+
+// Submit an employee
+function submitEmployee() {
+    if (selectedEmployeeId === null) return;
+    
+    // Instead of removing the employee, mark them as completed in manager view
+    const index = employees.findIndex(emp => emp.id === selectedEmployeeId);
+    if (index !== -1) {
+        employees[index].completedManagerWorkflow = true;
+        
+        // Reset selection
+        selectedEmployeeId = null;
+        
+        // Clear input fields
+        empWWIDInput.value = '';
+        empNameInput.value = '';
+        empGeoInput.value = '';
+        empTeamInput.value = '';
+        
+        // Reset checkboxes
+        planAcknowledgedCheckbox.checked = false;
+        addedToQSTCheckbox.checked = false;
+        addedToCRCCheckbox.checked = false;
+        filledVaricentCheckbox.checked = false;
+        exportedCheckbox.checked = false;
+        skipAllCheckbox.checked = false;
+        
+        // Clear plan table and show empty state
+        renderEmptyPlanTable();
+        
+        // Hide submit note
+        submitNote.style.display = 'none';
+        preSubmitNote.style.display = 'block';
+        
+        // Reset email button states
+        updateEmailButtonStates();
+        
+        // Reset last email date display
+        lastEmailDate.textContent = 'None';
+        
+        // Render updated list
+        renderEmployeeList();
+        renderEmployeeWorkflowList();
+        renderEmployeeSharepointData();
+        updateSectionStatus();
+    }
+}
+        
+        // Show help modal
+        function showHelpModal() {
+            let helpText = '';
+            const step1Empty = step1.classList.contains('empty');
+            const step2Empty = step2.classList.contains('empty');
+            const step3Empty = step3.classList.contains('empty');
+            
+            // Determine the current step
+            if (!step1Empty && step2Empty && step3Empty) {
+                helpText = `
+                    <p>You are currently at <strong>Step 1: Select Employee</strong>.</p>
+                    <p>Please click on your name in the list to proceed.</p>
+                `;
+            } else if (!step1Empty && !step2Empty && step3Empty) {
+                const planSelect = document.getElementById('planSelect');
+                const planName = document.getElementById('planName');
+                
+                if (planSelect && planSelect.value === '') {
+                    helpText = `
+                        <p>You are currently at <strong>Step 2: Validate Information and Select Plan</strong>.</p>
+                        <p>Please:</p>
+                        <ol class="help-list">
+                            <li>Verify that your personal information is correct</li>
+                            <li class="help-action">Select a plan from the dropdown menu</li>
+                        </ol>
+                    `;
+                } else if (planSelect) {
+                    helpText = `
+                        <p>You are currently at <strong>Step 2: Validate Information and Select Plan</strong>.</p>
+                        <p>You've selected Plan ${planSelect.value}: ${planName.textContent}</p>
+                        <p>The system will automatically advance you to Step 3.</p>
+                    `;
+                }
+            } else if (!step1Empty && !step2Empty && !step3Empty) {
+                const totalEl = document.getElementById('totalPercentage');
+                const employee = employees.find(emp => emp.id === selectedWorkflowEmployeeId);
+                const totalP = employee ? employee.quotaAllocations.reduce((sum, a) => sum + a.percentage, 0) : 0;
+                
+                if (totalP !== 100) {
+                    helpText = `
+                        <p>You are currently at <strong>Step 3: Assign Quotas</strong>.</p>
+                        <p class="help-action">Your total percentage is ${totalP}%. It must equal 100%.</p>
+                        <p>Please adjust your quota allocations to reach 100%.</p>
+                    `;
+                } else {
+                    // Check for specific issues with allocations
+                    const issues = getQuotaAllocationIssues();
+                    
+                    if (issues.length > 0) {
+                        helpText = `
+                            <p>You are currently at <strong>Step 3: Assign Quotas</strong>.</p>
+                            <p>Please fix the following issues:</p>
+                            <ul class="help-list">
+                                ${issues.map(issue => `<li class="help-action">${issue}</li>`).join('')}
+                            </ul>
+                        `;
+                    } else {
+                        helpText = `
+                            <p>You are currently at <strong>Step 3: Assign Quotas</strong>.</p>
+                            <p>Your quota allocation looks good! You can click "Submit" to complete the process.</p>
+                        `;
+                    }
+                }
+            }
+            
+            // Update help content
+            helpContent.innerHTML = helpText;
+            
+            // Show the modal
+            helpModal.style.display = 'flex';
+        }
+        
+        // Get specific issues with quota allocations
+        function getQuotaAllocationIssues() {
+            const issues = [];
+            
+            if (!selectedWorkflowEmployeeId) return issues;
+            
+            const employee = employees.find(emp => emp.id === selectedWorkflowEmployeeId);
+            if (!employee || !employee.quotaAllocations) return issues;
+            
+            // Group allocations by type
+            const groupedAllocations = {};
+            employee.quotaAllocations.forEach(allocation => {
+                if (!groupedAllocations[allocation.type]) {
+                    groupedAllocations[allocation.type] = [];
+                }
+                groupedAllocations[allocation.type].push(allocation);
+            });
+            
+            // Check each allocation for issues
+            for (const allocation of employee.quotaAllocations) {
+                // Check if accounts are missing
+                if (!allocation.accounts || allocation.accounts.trim() === '') {
+                    issues.push(`${allocation.name}: No accounts entered. Please add account information.`);
+                }
+                
+                // For main quotas, check if allocation matches target
+                if (allocation.type === 'main' && allocation.percentage !== allocation.target) {
+                    issues.push(`${allocation.name}: Your allocation is ${allocation.percentage}% but should be ${allocation.target}%.`);
+                }
+            }
+            
+            // Check group allocations (like BRG) for total target match
+            for (const type in groupedAllocations) {
+                if (type !== 'main') {
+                    const allocations = groupedAllocations[type];
+                    const totalByType = allocations.reduce((sum, a) => sum + a.percentage, 0);
+                    
+                    // The first allocation has the individual target, multiply by count to get group target
+                    const typeTotalTarget = allocations[0].target * allocations.length;
+                    
+                    if (totalByType !== typeTotalTarget) {
+                        // Get a nice name for the group based on first allocation's name without the A/B/etc. 
+                        const typeName = allocations[0].name.split(' ')[0]; // e.g., "BRG"
+                        issues.push(`${typeName} plan portion: Your allocation is ${totalByType}% but should be ${typeTotalTarget}%.`);
+                    }
+                }
+            }
+            
+            return issues;
+        }
+        
+        // Show employee email modal
+        function showEmployeeEmailModal() {
+            // Show the modal
+            employeeEmailModal.style.display = 'flex';
+        }
+        
+        // Handle send email
+        function handleSendEmail() {
+            // Close the modal
+            employeeEmailModal.style.display = 'none';
+            
+            // Show confirmation
+            alert('Email sent successfully!');
+        }
+        
+        // Short date format for table
+        function formatShortDate(dateString) {
+            const date = new Date(dateString);
+            return `${date.getMonth() + 1}/${date.getDate()}`;
+        }
+        
+        // Render plan table for a specific employee
+function renderPlanTable(employee) {
+    planList.innerHTML = '';
+    
+    if (employee && employee.plans && employee.plans.length > 0) {
+        // Always show exactly 3 plans
+        const plans = employee.plans.slice(0, 3);
+        
+        // Add empty rows if needed to always have 3 rows
+        while (plans.length < 3) {
+            plans.push({ plan: "", quota: "", accounts: "" });
+        }
+        
+        plans.forEach(plan => {
+            const row = document.createElement('tr');
+            row.style.height = '46px'; // Fixed height in JS too
+            row.innerHTML = `
+                <td style="height:46px !important;">${plan.plan}</td>
+                <td style="height:46px !important;">${plan.quota}</td>
+                <td style="height:46px !important;">${plan.accounts}</td>
+            `;
+            planList.appendChild(row);
+        });
+        
+        // Set a flag that plan info is populated
+        if (employee) {
+            employee.planInfoPopulated = true;
+        }
+    } else {
+        renderEmptyPlanTable();
+        
+        // Set a flag that plan info is NOT populated
+        if (employee) {
+            employee.planInfoPopulated = false;
+        }
+    }
+    
+    // Update submit button state based on plan info
+    updateSectionStatus();
+}
+
+// Render empty plan table
+function renderEmptyPlanTable() {
+    planList.innerHTML = `
+        <tr style="height:46px !important;">
+            <td colspan="3" style="text-align: center; color: #999; height:46px !important;"> </td>
+        </tr>
+        <tr style="height:46px !important;">
+            <td style="height:46px !important;">&nbsp;</td>
+            <td style="height:46px !important;">&nbsp;</td>
+            <td style="height:46px !important;">&nbsp;</td>
+        </tr>
+        <tr style="height:46px !important;">
+            <td style="height:46px !important;">&nbsp;</td>
+            <td style="height:46px !important;">&nbsp;</td>
+            <td style="height:46px !important;">&nbsp;</td>
+        </tr>
+    `;
+}
+       
+        
+        // Select an employee
+        function selectEmployee(id) {
+            // Deselect previous selected row
+            if (selectedEmployeeId) {
+                const prevRows = employeeList.querySelectorAll(`tr.selected`);
+                prevRows.forEach(row => {
+                    row.classList.remove('selected');
+                });
+            }
+            
+            selectedEmployeeId = id;
+            
+            // Highlight the selected row
+            const selectedRow = employeeList.querySelector(`tr[data-employee-id="${id}"]`);
+            if (selectedRow) {
+                selectedRow.classList.add('selected');
+            }
+            
+            // Get the selected employee
+            const employee = employees.find(emp => emp.id === id);
+            
+            // Update the input fields
+            empWWIDInput.value = employee.wwid;
+            empNameInput.value = employee.name;
+            empGeoInput.value = employee.geo;
+            empTeamInput.value = employee.team;
+            
+            // Update checkboxes based on process step
+            planAcknowledgedCheckbox.checked = employee.processStep >= 1;
+            addedToQSTCheckbox.checked = employee.processStep >= 2;
+            addedToCRCCheckbox.checked = employee.processStep >= 3;
+            filledVaricentCheckbox.checked = employee.processStep >= 4;
+            exportedCheckbox.checked = employee.processStep >= 5;
+            
+            // Render the plan table for this employee
+            renderPlanTable(employee);
+            
+            // Update email button states
+            updateEmailButtonStates();
+            
+            // Show/hide submit note based on button enabled state
+            updateSectionStatus();
+            
+            // Update the last email date display
+            updateLastEmailDateDisplay();
+        }
+        
+        // Update employee info when input fields change
+        function updateEmployeeInfo() {
+            if (selectedEmployeeId === null) return;
+            
+            const employee = employees.find(emp => emp.id === selectedEmployeeId);
+            if (!employee) return;
+            
+            // Update employee info with input values
+            employee.wwid = empWWIDInput.value;
+            employee.name = empNameInput.value;
+            employee.geo = empGeoInput.value;
+            employee.team = empTeamInput.value;
+            
+            // Update last modified time
+            employee.lastModified = new Date().toISOString();
+            
+            // Re-render the employee list to show updated data
+            renderEmployeeList();
+            renderEmployeeWorkflowList();
+            renderEmployeeSharepointData();
+        }
+        
+        // Update the last email date display
+        function updateLastEmailDateDisplay() {
+            if (!selectedEmployeeId) {
+                lastEmailDate.textContent = 'None';
+                return;
+            }
+            
+            const employee = employees.find(emp => emp.id === selectedEmployeeId);
+            if (!employee) {
+                lastEmailDate.textContent = 'None';
+                return;
+            }
+            
+            if (employee.managerEmailDate) {
+                lastEmailDate.textContent = formatDate(employee.managerEmailDate);
+            } else {
+                lastEmailDate.textContent = 'None';
+            }
+        }
+        
+        // Update email button states based on selected employee
+        function updateEmailButtonStates() {
+            if (!selectedEmployeeId) {
+                managerEmailBtn.disabled = true;
+                reminderBtn.disabled = true;
+                employeeEmailBtn.disabled = true;
+                return;
+            }
+            
+            const employee = employees.find(emp => emp.id === selectedEmployeeId);
+            if (!employee) {
+                managerEmailBtn.disabled = true;
+                reminderBtn.disabled = true;
+                employeeEmailBtn.disabled = true;
+                return;
+            }
+            
+            // Manager email button is disabled if already sent
+            managerEmailBtn.disabled = employee.managerEmailSent;
+            
+            // Reminder button is enabled only if manager email was already sent
+            reminderBtn.disabled = !employee.managerEmailSent;
+            
+            // Employee email button is disabled if already sent
+            employeeEmailBtn.disabled = employee.employeeEmailSent;
+        }
+        
+        // Toggle export for an employee
+        function toggleExport(id) {
+            const employee = employees.find(emp => emp.id === id);
+            employee.export = !employee.export;
+        }
+        
+        // Update employee status based on checkboxes
+        function updateEmployeeStatus() {
+            if (selectedEmployeeId === null) return;
+            
+            const employee = employees.find(emp => emp.id === selectedEmployeeId);
+            
+            // Calculate process step
+            let processStep = 0;
+            if (planAcknowledgedCheckbox.checked) processStep = 1;
+            if (addedToQSTCheckbox.checked) processStep = 2;
+            if (addedToCRCCheckbox.checked) processStep = 3;
+            if (filledVaricentCheckbox.checked) processStep = 4;
+            if (exportedCheckbox.checked) processStep = 5;
+            
+            employee.processStep = processStep;
+            
+            // Update row status
+            if (processStep >= 5) {
+                employee.status = 'green';
+            } else if (processStep >= 1) {
+                employee.status = 'yellow';
+            } else {
+                employee.status = 'normal';
+            }
+            
+            // Update last modified time
+            employee.lastModified = new Date().toISOString();
+            
+            renderEmployeeList();
+            renderEmployeeSharepointData();
+            updateSectionStatus();
+        }
+        
+        // Update the enabled/disabled state based on process completion
+        function updateSectionStatus() {
+            const skipAll = skipAllCheckbox.checked;
+            
+            if (selectedEmployeeId === null) {
+                submitBtn.disabled = true;
+                submitNote.style.display = 'none';
+                return;
+            }
+            
+            const employee = employees.find(emp => emp.id === selectedEmployeeId);
+            if (!employee) {
+                submitBtn.disabled = true;
+                submitNote.style.display = 'none';
+                return;
+            }
+            
+            // Check if plan info is populated
+            const planInfoPopulated = employee.planInfoPopulated === true;
+            
+            // Enable submit button if all steps are completed or skip all is checked
+            // AND plan info is populated
+            const isSubmitEnabled = (employee.processStep === 5 || skipAll) && (planInfoPopulated || skipAll);
+            submitBtn.disabled = !isSubmitEnabled;
+            
+            // Show/hide submit note based on button enabled state
+            submitNote.style.display = isSubmitEnabled ? 'block' : 'none';
+            preSubmitNote.style.display = isSubmitEnabled ? 'none' : 'block';
+            
+            // If plan info is not populated and not skipping, show a message about it
+            if (!planInfoPopulated && !skipAll) {
+                preSubmitNote.innerHTML = '<strong>NOTE:</strong> Employee plan information is missing. Please make sure the employee has submitted their plan selections before proceeding.';
+            } else {
+                preSubmitNote.innerHTML = '<strong>NOTE:</strong> Ensure all employee information is complete before submitting. The app will commit any changes made after the submit button is triggered.';
+            }
+        }
+        
+        // Send manager email
+        function sendManagerEmail() {
+            if (!selectedEmployeeId) return;
+            
+            const employee = employees.find(emp => emp.id === selectedEmployeeId);
+            if (!employee) return;
+            
+            showFlowModal('manager');
+            
+            // Update employee data
+            employee.managerEmailSent = true;
+            employee.managerEmailDate = new Date().toISOString();
+            
+            // Update counter and last date
+            managerEmailsSent++;
+            emailCount.textContent = managerEmailsSent;
+            updateLastEmailDateDisplay();
+            
+            // Update UI
+            renderEmployeeList();
+            renderEmployeeSharepointData();
+            updateEmailButtonStates();
+        }
+        
+        // Send reminder email
+        function sendReminderEmail() {
+            if (!selectedEmployeeId) return;
+            
+            const employee = employees.find(emp => emp.id === selectedEmployeeId);
+            if (!employee || !employee.managerEmailSent) return;
+            
+            showFlowModal('reminder');
+            
+            // Update employee data
+            employee.lastReminderDate = new Date().toISOString();
+            
+            // Update UI
+            renderEmployeeList();
+            renderEmployeeSharepointData();
+        }
+        
+        // Send employee email
+        function sendEmployeeEmail() {
+            if (!selectedEmployeeId) return;
+            
+            const employee = employees.find(emp => emp.id === selectedEmployeeId);
+            if (!employee) return;
+            
+            showFlowModal('employee');
+            
+            // Update employee data
+            employee.employeeEmailSent = true;
+            
+            // Update UI
+            renderEmployeeList();
+            renderEmployeeSharepointData();
+            updateEmailButtonStates();
+        }
+        
+        function showExportModal() {
+    // Get all employees for manager view (not completed in manager workflow)
+    const exportedEmployees = employees.filter(emp => 
+        emp.export && !emp.completedManagerWorkflow
+    );
+    
+    // Populate the excel table
+    const excelData = document.getElementById('excelData');
+    excelData.innerHTML = '';
+    
+    exportedEmployees.forEach(employee => {
+        const row = document.createElement('tr');
+        
+        // Split name into first/last name
+        const nameParts = employee.name.split(' ');
+        const lastName = nameParts.pop();
+        const firstName = nameParts.join(' ');
+        
+        // Format plan code based on employee details
+        const planCode = `BP-${employee.team.slice(0, 3).toUpperCase()}${employee.geo.charAt(0)}`;
+        
+        // Create different format for account assignment
+        const accountAssignment = employee.team === 'Enterprise' ? 'CORE-ENT' : 
+                                  employee.team === 'SMB' ? 'SMB-COMM' : 
+                                  employee.team === 'Commercial' ? 'COMM-NET' : 'PUB-GOV';
+        
+        row.innerHTML = `
+            <td>${lastName}</td>
+            <td>${firstName}</td>
+            <td>${employee.wwid.slice(3)}</td>
+            <td>${employee.geo === 'Americas' ? 'NA' : employee.geo}</td>
+            <td>${formatDateForExcel(employee.startDate)}</td>
+            <td>${planCode}</td>
+            <td>${accountAssignment}</td>
+            <td>${processStepLabels[employee.processStep]}</td>
+        `;
+        
+        excelData.appendChild(row);
+    });
+    
+    // Show the modal
+    exportModal.style.display = 'flex';
+}
+
+// Refresh data for manager view
+function refreshData() {
+    // Change status indicator to red
+    statusLight.style.backgroundColor = '#f44336';
+    
+    setTimeout(() => {
+        // Check which view we're in
+        if (currentAppView === 'manager') {
+            // Show SharePoint view for manager
+            sharepointModal.style.display = 'flex';
+            
+            // Populate the SharePoint table
+            const sharepointData = document.getElementById('sharepointData');
+            sharepointData.innerHTML = '';
+            
+            // Get manager view employees
+            const managerViewEmployees = employees.filter(emp => !emp.completedManagerWorkflow);
+            
+            // Sort by last modified date for SharePoint view
+            const sortedEmployees = [...managerViewEmployees].sort((a, b) => 
+                new Date(b.lastModified) - new Date(a.lastModified)
+            );
+            
+            sortedEmployees.forEach(employee => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${employee.name}</td>
+                    <td>${employee.wwid}</td>
+                    <td>${employee.geo}</td>
+                    <td>${employee.team}</td>
+                    <td>${employee.startDate}</td>
+                    <td>${processStepLabels[employee.processStep]}</td>
+                    <td>${formatDate(employee.lastModified)}</td>
+                `;
+                
+                sharepointData.appendChild(row);
+            });
+        } else {
+            // Employee view - show the employee-specific SharePoint modal
+            showEmployeeSharepointModal();
+        }
+        
+        // Change status indicator back to green
+        statusLight.style.backgroundColor = '#4CAF50';
+    }, 1500);
+}
+
+// Show employee SharePoint modal
+function showEmployeeSharepointModal() {
+    // Populate the SharePoint table for employee view
+    const empSharepointData = document.getElementById('empSharepointData');
+    empSharepointData.innerHTML = '';
+    
+    // Get employees for employee view
+    const employeeViewEmployees = employees.filter(emp => !emp.completedEmployeeWorkflow);
+    
+    // Sort by process step (highest first)
+    const sortedEmployees = [...employeeViewEmployees].sort((a, b) => b.processStep - a.processStep);
+    
+    sortedEmployees.forEach(employee => {
+        const row = document.createElement('tr');
+        
+        // Format quota allocations as a string
+        let quotaAllocationsText = 'None';
+        if (employee.quotaAllocations && employee.quotaAllocations.length > 0) {
+            quotaAllocationsText = employee.quotaAllocations
+                .map(allocation => `${allocation.name}: ${allocation.percentage}%`)
+                .join('; ');
+        }
+        
+        // Get selected plan name
+        let selectedPlanName = 'None';
+        if (employee.selectedPlan && planDefinitions[employee.selectedPlan]) {
+            selectedPlanName = planDefinitions[employee.selectedPlan].name;
+        }
+        
+        row.innerHTML = `
+            <td>${employee.name}</td>
+            <td>${employee.wwid}</td>
+            <td>${employee.team}</td>
+            <td>${selectedPlanName}</td>
+            <td>${quotaAllocationsText}</td>
+            <td>${formatDate(employee.lastModified)}</td>
+        `;
+        
+        empSharepointData.appendChild(row);
+    });
+    
+    // Show the modal
+    employeeSharepointModal.style.display = 'flex';
+}
+        
+        // Format date for Excel (MM/DD/YYYY)
+        function formatDateForExcel(dateString) {
+            const date = new Date(dateString);
+            return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+        }
+        
+        // Import a new employee
+        function importEmployee() {
+            // Change status indicator to red
+            statusLight.style.backgroundColor = '#f44336';
+            
+            setTimeout(() => {
+                // Only import if there are new employees available
+                if (newEmployees.length > 0) {
+                    // Take the first new employee
+                    const newEmployee = newEmployees.shift();
+                    
+                    // Initialize the completion flags for the new employee
+                    newEmployee.completedManagerWorkflow = false;
+                    newEmployee.completedEmployeeWorkflow = false;
+                    newEmployee.planInfoPopulated = newEmployee.plans && newEmployee.plans.length > 0;
+                    
+                    // Add new employee to the beginning of the array
+                    employees.unshift(newEmployee);
+                    
+                    // Remove the last employee if there are more than 3
+                    if (employees.length > 3) {
+                        employees.pop();
+                    }
+                    
+                    // Update last modified time
+                    newEmployee.lastModified = new Date().toISOString();
+                    
+                    // Render the updated list
+                    renderEmployeeList();
+                    renderEmployeeWorkflowList();
+                    renderEmployeeSharepointData();
+                }
+                
+                // Change status indicator back to green
+                statusLight.style.backgroundColor = '#4CAF50';
+            }, 1000);
+        }
+        
+        // Show flow modal
+        function showFlowModal(recipient) {
+            const flowTitle = document.getElementById('flowTitle');
+            
+            if (recipient === 'manager') {
+                flowTitle.textContent = 'Power Automate Flow: Email to Manager';
+                
+                if (selectedEmployeeId) {
+                    const employee = employees.find(emp => emp.id === selectedEmployeeId);
+                    
+                    // Set email values manually instead of using innerHTML
+                    emailRecipient.textContent = 'John Manager';
+                    emailAddress.textContent = 'john.manager@company.com';
+                    emailSubject.textContent = 'Action Required: Employee Onboarding Task';
+                    recipientName.textContent = 'John';
+                    
+                    emailEmployeeName.textContent = employee.name;
+                    emailEmployeeWWID.textContent = employee.wwid;
+                    emailStartDate.textContent = employee.startDate;
+                    
+                    // Set email body
+                    emailBody.innerHTML = `
+                        <p>Hello John,</p>
+                        <p>You have a new employee who requires onboarding. Please review and complete the onboarding process as soon as possible.</p>
+                        <p><strong>Employee Details:</strong><br>
+                        Name: ${employee.name}<br>
+                        WWID: ${employee.wwid}<br>
+                        Team: ${employee.team}<br>
+                        Start Date: ${employee.startDate}</p>
+                        <p>Please ensure all system access, training requirements, and compensation plans are set up before the start date.</p>
+                        <p>Thank you,<br>Onboarding System</p>
+                    `;
+                }
+            } else if (recipient === 'employee') {
+                flowTitle.textContent = 'Power Automate Flow: Email to Employee';
+                
+                if (selectedEmployeeId) {
+                    const employee = employees.find(emp => emp.id === selectedEmployeeId);
+                    
+                    // Set email values manually
+                    emailRecipient.textContent = employee.name;
+                    emailAddress.textContent = `${employee.name.toLowerCase().replace(' ', '.')}@company.com`;
+                    emailSubject.textContent = 'Welcome: Your Onboarding Information';
+                    recipientName.textContent = employee.name.split(' ')[0];
+                    
+                    emailEmployeeName.textContent = employee.name;
+                    emailEmployeeWWID.textContent = employee.wwid;
+                    emailStartDate.textContent = employee.startDate;
+                    
+                    // Set email body
+                    emailBody.innerHTML = `
+                        <p>Hello ${employee.name.split(' ')[0]},</p>
+                        <p>Welcome! We're excited to have you join our team.</p>
+                        <p>Your onboarding process has been initiated. Here are your initial details:</p>
+                        <p><strong>Your Information:</strong><br>
+                        Name: ${employee.name}<br>
+                        WWID: ${employee.wwid}<br>
+                        Team: ${employee.team}<br>
+                        Start Date: ${employee.startDate}</p>
+                        <p>Please review your sales plans and compensation information in the attached document. You'll need to acknowledge receipt of these plans through our onboarding system.</p>
+                        <p>If you have any questions, please contact your manager, John Manager, or the HR team.</p>
+                        <p>Best regards,<br>Onboarding Team</p>
+                    `;
+                }
+            } else {
+                flowTitle.textContent = 'Power Automate Flow: Reminder Email';
+                
+                if (selectedEmployeeId) {
+                    const employee = employees.find(emp => emp.id === selectedEmployeeId);
+                    
+                    // Set email values manually
+                    emailRecipient.textContent = 'John Manager';
+                    emailAddress.textContent = 'john.manager@company.com';
+                    emailSubject.textContent = 'REMINDER: Pending Employee Onboarding Tasks';
+                    recipientName.textContent = 'John';
+                    
+                    emailEmployeeName.textContent = employee.name;
+                    emailEmployeeWWID.textContent = employee.wwid;
+                    emailStartDate.textContent = employee.startDate;
+                    
+                    // Set email body
+                    emailBody.innerHTML = `
+                        <p>Hello John,</p>
+                        <p><strong>REMINDER:</strong> The onboarding process for ${employee.name} is still pending completion.</p>
+                        <p><strong>Employee Details:</strong><br>
+                        Name: ${employee.name}<br>
+                        WWID: ${employee.wwid}<br>
+                        Start Date: ${employee.startDate}</p>
+                        <p>Current Status: ${processStepLabels[employee.processStep]}</p>
+                        <p>Please complete the remaining onboarding steps as soon as possible to ensure a smooth transition for your new team member.</p>
+                        <p>Thank you,<br>Onboarding System</p>
+                    `;
+                }
+            }
+            
+            // Show the modal
+            flowModal.style.display = 'flex';
+        }
+        
+        // Search employees
+        function searchEmployees() {
+            const searchText = searchBox.value.toLowerCase();
+            
+            // Filter the employee list based on search text
+            const filteredEmployees = employees.filter(employee => {
+                return employee.name.toLowerCase().includes(searchText) ||
+                       employee.wwid.includes(searchText) ||
+                       employee.team.toLowerCase().includes(searchText) ||
+                       employee.geo.toLowerCase().includes(searchText);
+            });
+            
+            // Render the filtered list for manager view
+            employeeList.innerHTML = '';
+            
+            filteredEmployees.forEach(employee => {
+                const row = document.createElement('tr');
+                row.className = employee.status;
+                
+                // Add selected class if this is the selected employee
+                if (selectedEmployeeId && employee.id === selectedEmployeeId) {
+                    row.classList.add('selected');
+                }
+                
+                row.onclick = () => selectEmployee(employee.id);
+                row.setAttribute('data-employee-id', employee.id);
+                
+                // Get first name for shorter display
+                const firstName = employee.name.split(' ')[0];
+                
+                row.innerHTML = `
+                    <td>${firstName}</td>
+                    <td>${employee.wwid}</td>
+                    <td>${employee.geo}</td>
+                    <td>${employee.group}</td>
+                    <td>${employee.team}</td>
+                    <td>${employee.org}</td>
+                    <td>John</td>
+                    <td>${formatShortDate(employee.startDate)}</td>
+                    <td>${employee.processStep}/5</td>
+                    <td>${employee.managerEmailSent ? '✓' : '✗'}</td>
+                    <td>${employee.lastReminderDate ? '✓' : '✗'}</td>
+                    <td>${employee.employeeEmailSent ? '✓' : '✗'}</td>
+                    <td><input type="checkbox" ${employee.export ? 'checked' : ''} onclick="event.stopPropagation(); toggleExport(${employee.id})"></td>
+                `;
+                
+                employeeList.appendChild(row);
+            });
+        }
+        
+        // Sort employees
+        function sortEmployees(sortBy) {
+            switch (sortBy) {
+                case 'name':
+                    employees.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'status':
+                    employees.sort((a, b) => {
+                        const statusOrder = { green: 0, yellow: 1, normal: 2 };
+                        return statusOrder[a.status] - statusOrder[b.status];
+                    });
+                    break;
+                case 'date':
+                    employees.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+                    break;
+                case 'default':
+                    employees.sort((a, b) => a.id - b.id);
+                    break;
+            }
+            
+            renderEmployeeList();
+            renderEmployeeSharepointData();
+            
+            // Maintain selection if possible
+            if (selectedEmployeeId && employees.find(e => e.id === selectedEmployeeId)) {
+                selectEmployee(selectedEmployeeId);
+            }
         }
         
         // Format date
@@ -812,387 +3382,6 @@ const employees = [
                 minute: '2-digit'
             });
         }
-        
-        // Extract name from email (first.last@domain.com -> First Last)
-        function getNameFromEmail(email) {
-            const namePart = email.split('@')[0];
-            const names = namePart.split('.');
-            
-            return names.map(name => 
-                name.charAt(0).toUpperCase() + name.slice(1)
-            ).join(' ');
-        }
-        
-        // Get employee by email
-        function getEmployeeByEmail(email) {
-            return employees.find(emp => emp.email.toLowerCase() === email.toLowerCase());
-        }
-        
-        // Get manager by email
-        function getManagerByEmail(email) {
-            return managers.find(mgr => mgr.email.toLowerCase() === email.toLowerCase());
-        }
-        
-        // Get employees for a manager
-        function getEmployeesForManager(managerId) {
-            const manager = managers.find(mgr => mgr.id === managerId);
-            if (!manager) return [];
-            
-            return employees.filter(emp => manager.employeeIds.includes(emp.id));
-        }
-        
-        // Calculate total budget and remaining budget
-function calculateBudget(managerEmployees) {
-    let totalBase = 0;
-    let totalPay = 0;
-    
-    managerEmployees.forEach(emp => {
-        totalBase += emp.baseSalary;
-        totalPay += emp.payAmount;
-    });
-    
-    // Set budget to 110% of base salary total
-    const budgetAmount = totalBase * 1.1;
-    
-    return {
-        totalBase: budgetAmount,  // Changed to use 110% of base salary
-        totalPay,
-        remaining: budgetAmount - totalPay
-    };
-}
-        
-        // Update the budget info display
-        function updateBudgetDisplay(budget) {
-            budgetTotal.textContent = formatCurrency(budget.totalBase);
-            budgetRemaining.textContent = formatCurrency(budget.remaining);
-            
-            // Change color if negative
-            if (budget.remaining < 0) {
-                budgetInfoDiv.classList.add('negative');
-            } else {
-                budgetInfoDiv.classList.remove('negative');
-            }
-        }
-        
-        // Update row styles based on budget
-        function updateRowStyles(tableBody, isOverBudget) {
-            const rows = tableBody.querySelectorAll('tr');
-            
-            rows.forEach(row => {
-                if (isOverBudget) {
-                    row.classList.add('over-budget');
-                } else {
-                    row.classList.remove('over-budget');
-                }
-            });
-        }
-        
-        // Render manager view
-        function renderManagerView(managerId) {
-            const managerEmployees = getEmployeesForManager(managerId);
-            const managerTableBody = document.getElementById('manager-table-body');
-            
-            let html = '';
-            
-            managerEmployees.forEach(emp => {
-                html += `
-                <tr data-employee-id="${emp.id}">
-                    <td>${emp.name}</td>
-                    <td>${emp.okrGoal}</td>
-                    <td>${emp.goalEvidence}</td>
-                    <td>${emp.selfRating}</td>
-                    <td>${generateRatingDropdown(emp.managerRating, 'manager-rating')}</td>
-                    <td><input type="number" min="70" max="120" class="score" value="${emp.score}" style="width: 70px;"></td>
-                    <td id="pay-${emp.id}">${formatCurrency(emp.payAmount)}</td>
-                </tr>
-                `;
-            });
-            
-            managerTableBody.innerHTML = html;
-            
-            // Update budget numbers and styling
-            const budget = calculateBudget(managerEmployees);
-            updateBudgetDisplay(budget);
-            updateRowStyles(managerTableBody, budget.remaining < 0);
-            
-            // Add listeners to score inputs
-            document.querySelectorAll('.score').forEach(input => {
-                input.addEventListener('change', function() {
-                    const tr = this.closest('tr');
-                    const employeeId = parseInt(tr.dataset.employeeId);
-                    const score = parseInt(this.value);
-                    
-                    // Validate score within range
-                    if (score < 70) this.value = 70;
-                    if (score > 120) this.value = 120;
-                    
-                    // Update pay percentage and amount
-                    const employee = employees.find(emp => emp.id === employeeId);
-                    if (employee) {
-                        employee.score = parseInt(this.value);
-                        employee.payPercentage = employee.score;
-                        employee.payAmount = (employee.baseSalary * employee.payPercentage / 100);
-                        document.getElementById(`pay-${employeeId}`).textContent = formatCurrency(employee.payAmount);
-                        
-                        // Update manager rating based on score
-                        const managerRatingSelect = tr.querySelector('.manager-rating');
-                        if (score >= 110) {
-                            managerRatingSelect.value = "Exceeds";
-                            employee.managerRating = "Exceeds";
-                        } else if (score >= 96) {
-                            managerRatingSelect.value = "Meets";
-                            employee.managerRating = "Meets";
-                        } else {
-                            managerRatingSelect.value = "Does Not Meet";
-                            employee.managerRating = "Does Not Meet";
-                        }
-                        
-                        // Update last modified time
-                        employee.lastModified = new Date().toISOString();
-                        
-                        // Update budget and styling
-                        const budget = calculateBudget(managerEmployees);
-                        updateBudgetDisplay(budget);
-                        updateRowStyles(managerTableBody, budget.remaining < 0);
-                        
-                        // Show sync notification, but only if not already shown
-                        if (!notificationShown) {
-                            showNotification();
-                            notificationShown = true;
-                        }
-                    }
-                });
-            });
-            
-            // Add listeners to manager rating dropdown
-            document.querySelectorAll('.manager-rating').forEach(select => {
-                select.addEventListener('change', function() {
-                    const tr = this.closest('tr');
-                    const employeeId = parseInt(tr.dataset.employeeId);
-                    const employee = employees.find(emp => emp.id === employeeId);
-                    const scoreInput = tr.querySelector('.score');
-                    
-                    if (employee) {
-                        employee.managerRating = this.value;
-                        
-                        // Adjust score based on rating
-                        if (this.value === "Exceeds") {
-                            scoreInput.value = Math.max(110, employee.score);
-                        } else if (this.value === "Meets") {
-                            scoreInput.value = Math.min(Math.max(96, employee.score), 109);
-                        } else {
-                            scoreInput.value = Math.min(employee.score, 95);
-                        }
-                        
-                        // Trigger the score change event
-                        const event = new Event('change');
-                        scoreInput.dispatchEvent(event);
-                        
-                        // Update last modified time
-                        employee.lastModified = new Date().toISOString();
-                    }
-                });
-            });
-        }
-        
-        // Generate dropdown for rating
-        function generateRatingDropdown(selected, className) {
-            let html = `<select class="${className}">`;
-            ratingOptions.forEach(rating => {
-                html += `<option value="${rating}" ${rating === selected ? 'selected' : ''}>${rating}</option>`;
-            });
-            html += `</select>`;
-            return html;
-        }
-        
-        // Generate dropdown for OKR goals
-        function generateOkrGoalDropdown(selected) {
-            let html = `<select class="okr-goal">`;
-            okrGoals.forEach(goal => {
-                html += `<option value="${goal}" ${goal === selected ? 'selected' : ''}>${goal}</option>`;
-            });
-            html += `</select>`;
-            return html;
-        }
-        
-        // Render employee view
-        function renderEmployeeView(employeeId) {
-            const employee = employees.find(emp => emp.id === employeeId);
-            const employeeTableBody = document.getElementById('employee-table-body');
-            
-            if (!employee) {
-                employeeTableBody.innerHTML = '<tr><td colspan="7">No data available</td></tr>';
-                return;
-            }
-            
-            let html = `
-            <tr>
-                <td>${employee.name}</td>
-                <td>${employee.managerRating}</td>
-                <td>${employee.score}</td>
-                <td>${formatCurrency(employee.payAmount)}</td>
-                <td>${generateOkrGoalDropdown(employee.okrGoal)}</td>
-                <td><input type="text" class="goal-evidence" value="${employee.goalEvidence}"></td>
-                <td>${generateRatingDropdown(employee.selfRating, 'self-rating')}</td>
-            </tr>
-            `;
-            
-            employeeTableBody.innerHTML = html;
-            
-            // Add listeners to editable fields
-            document.querySelectorAll('.okr-goal, .goal-evidence, .self-rating').forEach(input => {
-                input.addEventListener('change', function() {
-                    if (this.classList.contains('okr-goal')) {
-                        employee.okrGoal = this.value;
-                    } else if (this.classList.contains('goal-evidence')) {
-                        employee.goalEvidence = this.value;
-                    } else if (this.classList.contains('self-rating')) {
-                        employee.selfRating = this.value;
-                    }
-                    
-                    // Update last modified time
-                    employee.lastModified = new Date().toISOString();
-                    
-                    // Show sync notification, but only if not already shown
-                    if (!notificationShown) {
-                        showNotification();
-                        notificationShown = true;
-                    }
-                });
-            });
-        }
-        
-        // Render SharePoint list
-        function renderSharePointList() {
-            const spTableBody = document.getElementById('sp-table-body');
-            let html = '';
-            
-            // Sort by last modified date
-            const sortedEmployees = [...employees].sort((a, b) => 
-                new Date(b.lastModified) - new Date(a.lastModified)
-            );
-            
-            sortedEmployees.forEach(emp => {
-                const manager = managers.find(mgr => mgr.employeeIds.includes(emp.id));
-                
-                html += `
-                <tr>
-                    <td>${emp.name}</td>
-                    <td>${manager ? manager.name : 'Unassigned'}</td>
-                    <td>${emp.okrGoal}</td>
-                    <td>${emp.goalEvidence}</td>
-                    <td>${emp.selfRating}</td>
-                    <td>${emp.managerRating}</td>
-                    <td>${emp.score}</td>
-                    <td>${formatCurrency(emp.payAmount)}</td>
-                    <td>${formatDate(emp.lastModified)}</td>
-                </tr>
-                `;
-            });
-            
-            spTableBody.innerHTML = html;
-        }
-        
-        // Show notification
-        function showNotification() {
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-        
-        // Start button click event
-        startBtn.addEventListener('click', function() {
-            const email = emailInput.value || 'john.manager@example.com';
-            isAdmin = adminCheckbox.checked;
-            
-            const name = getNameFromEmail(email);
-            userInfo.textContent = name;
-            
-            // For demo, always use John Manager
-            currentUser = managers[0];
-            
-            // Show action buttons
-            sharepointBtn.classList.remove('hidden');
-            flowBtn.classList.remove('hidden');
-            
-            // Set tabs visibility
-            tabsContainer.style.display = isAdmin ? 'flex' : 'none';
-            
-            if (isAdmin) {
-                renderManagerView(currentUser.id);
-            } else {
-                showScreen('employee');
-                renderEmployeeView(employees[0].id);
-            }
-            
-            // Hide start screen, show main app
-            startScreen.classList.remove('visible');
-            startScreen.classList.add('hidden');
-            
-            mainApp.classList.remove('hidden');
-            mainApp.classList.add('visible');
-        });
-        
-        // Tab click events
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                const tabName = this.dataset.tab;
-                
-                // Update active tab
-                tabs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                showScreen(tabName);
-                
-                // Render appropriate view
-                if (tabName === 'manager' && currentUser) {
-                    renderManagerView(currentUser.id);
-                } else if (tabName === 'employee' && currentUser) {
-                    renderEmployeeView(employees[0].id);
-                }
-            });
-        });
-        
-        // Show specific screen
-        function showScreen(screenName) {
-            managerScreen.classList.remove('visible');
-            employeeScreen.classList.remove('visible');
-            
-            if (screenName === 'manager') {
-                managerScreen.classList.add('visible');
-            } else if (screenName === 'employee') {
-                employeeScreen.classList.add('visible');
-            }
-        }
-        
-        // SharePoint button click event
-        sharepointBtn.addEventListener('click', function() {
-            renderSharePointList();
-            sharepointModal.style.display = 'flex';
-        });
-        
-        // Flow button click event
-        flowBtn.addEventListener('click', function() {
-            flowModal.style.display = 'flex';
-        });
-        
-        // Close modals
-        closeModalButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const modalId = this.dataset.modal;
-                document.getElementById(modalId).style.display = 'none';
-            });
-        });
-        
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target === sharepointModal) {
-                sharepointModal.style.display = 'none';
-            } else if (event.target === flowModal) {
-                flowModal.style.display = 'none';
-            }
-        };
     </script>
 </body>
 </html>
